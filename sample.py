@@ -1,16 +1,30 @@
 import concurrent.futures
+import multiprocessing
+multiprocessing.set_start_method('spawn', True)
+import subprocess
 import hashlib
+"""
+https://gist.github.com/tag1216/40b75346fd4ffdbfba22a55905094b0e#file-01_thread-py
+https://blog.imind.jp/entry/2019/02/17/012210 
+https://github.com/joblib/joblib/issues/864 ... multiprocessingのおまじない
+https://takuya-1st.hatenablog.jp/entry/2016/04/11/044313 ... subprocessの仕様
+"""
 
 def digest(t): # 適当にCPU資源を消費するための関数
     hash = hashlib.sha256()
     for i in range(t*1000000):
-        hash.update('hogehoge')
+        hash.update('hogehoge'.encode('utf-8'))
     return hash.hexdigest()
 
 if __name__=='__main__':
 
     task_list = [1,1,1,2,2,3]
-
+    cmd = ["sbatch", "submit.sh"]
+    proc = subprocess.Popen(cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+    res = proc.communicate()
+    print(res)
     # Executorオブジェクトを作成
     executor = concurrent.futures.ProcessPoolExecutor(max_workers=4)
 
