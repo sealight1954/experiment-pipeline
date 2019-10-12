@@ -1,9 +1,9 @@
-from job_script import job_sleep
+from job_script.job_sleep import run_job_sleep
 from base_executor import BaseExecutor
 
 class SleepExecutor(BaseExecutor):
     def __init__(self):
-        return 0
+        self.i = 1
     
     def run(self, id):
-        job_sleep(n=5, id=id)
+        run_job_sleep(n=5, id=id)

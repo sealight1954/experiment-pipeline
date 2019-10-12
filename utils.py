@@ -7,3 +7,5 @@ def cmd_run_and_print(cmd, isReturnJobid=False):
     print("stderr: {}".format(comp_proc.stderr))
     if isReturnJobid:
         return int(comp_proc.stdout)
+
+def sbatch_run(args, depends_on=[])
