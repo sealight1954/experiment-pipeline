@@ -15,7 +15,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", default=5, type=int,
         help="time to sleep")
-    parser.add_argument("--id", default=0, type=int,
+    parser.add_argument("--id", default=0, type=str,
         help="id to identify job.")
     args = parser.parse_args()
     return args
