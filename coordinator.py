@@ -1,4 +1,5 @@
 import argparse
+import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from sleep_executor import SleepExecutor
@@ -17,7 +18,11 @@ def main(args):
 
     # Executorオブジェクトにタスクをsubmitし、同数だけfutureオブジェクトを得る。
     # タスクの実行は、submit()を呼び出した瞬間から開始される。
+    # ユーザーはこれを渡す
     futures = [executor.submit(run_pipeline,t, sleep_executor) for t in range(3)]
+    time.sleep(5)
+    # Note: submit job already started.
+    print("Submit finished")
 
     # 各futureの完了を待ち、結果を取得。
     # as_completed()は、与えられたfuturesの要素を完了順にたどるイテレータを返す。
