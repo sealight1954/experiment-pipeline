@@ -35,27 +35,27 @@ def main(args):
     submit_flags = [False] * len(job_list)
     while True:
         # print ("idx: {} started".format(idx))
-        job = job_list[idx]
+        job_name, cmd_executor, cmd_args, job_dependency = job_list[idx]
+        # print(job_list[idx])
+        # print(job_name, cmd_executor, cmd_args, job_dependency)
         if submit_flags[idx]:
             idx = (idx + 1) % len(job_list)
             continue
-        if job[3] is None:
-            future_dict[job[0]] = executor.submit(job[1].run, job[2])
+        if job_dependency is None:
+            future_dict[job_name] = executor.submit(cmd_executor.run, cmd_args)
             submit_flags[idx] = True
             print("submit because no dependency")
         else:
             ok_to_run = True
-            for job_name in job[3]:
-                future_item = future_dict.get(job_name)
-                #         ok_to_run = False
-                #         break
+            for dependent_job_name in job_dependency:
+                future_item = future_dict.get(dependent_job_name)
                 if future_item is None or not future_item.done():
                     ok_to_run = False
                     break
             if ok_to_run:
-                future_dict[job[0]] = executor.submit(job[1].run, job[2])
+                future_dict[job_name] = executor.submit(cmd_executor.run, cmd_args)
                 submit_flags[idx] = True
-                print("submit with dependency met: {}".format(job[3]))
+                print("submit with dependency met: {}".format(job_dependency))
         if np.all(submit_flags):
             print("submit finished")
             break
