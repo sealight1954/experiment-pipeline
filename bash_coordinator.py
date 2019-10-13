@@ -11,7 +11,7 @@ def run_pipeline(p_id, executor):
 
 
 def main(args):
-    sleep_executor = SleepBashExecutor(["python", "./job_script/job_sleep.py"])
+    sleep_executor = SleepBashExecutor()
     # run_pipeline("2", sleep_executor)
         # Executorオブジェクトを作成
     executor = ProcessPoolExecutor(max_workers=4)
