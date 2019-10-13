@@ -4,6 +4,7 @@ import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from sleep_bash_executor import SleepBashExecutor, SleepBashExecutor1, SleepBashExecutor2
+from coordinator import Coordinator
 
 def run_pipeline(p_id, executor):
     for i in range(3):
@@ -16,7 +17,6 @@ def main(args):
     sleep_executor2 = SleepBashExecutor2()
     # run_pipeline("2", sleep_executor)
         # Executorオブジェクトを作成
-    executor = ProcessPoolExecutor(max_workers=4)
     job_list = [ # job-name, executor, args, depends_on
         ["task1", sleep_executor1, "task1", None],
         ["task1-1", sleep_executor1, "task1-1", ["task1"]],
@@ -26,43 +26,8 @@ def main(args):
         ["task2-2", sleep_executor2, "task2-2", ["task2"]],
         ["task3", sleep_executor1, "task3", None],
     ]
-    future_dict = {}
-    # Executorオブジェクトにタスクをsubmitし、同数だけfutureオブジェクトを得る。
-    # タスクの実行は、submit()を呼び出した瞬間から開始される。
-    # ユーザーはこれを渡す
-    # futures = [executor.submit(run_pipeline,t, sleep_executor) for t in range(3)]
-    idx = 0
-    submit_flags = [False] * len(job_list)
-    while True:
-        # print ("idx: {} started".format(idx))
-        job_name, cmd_executor, cmd_args, job_dependency = job_list[idx]
-        # print(job_list[idx])
-        # print(job_name, cmd_executor, cmd_args, job_dependency)
-        if submit_flags[idx]:
-            idx = (idx + 1) % len(job_list)
-            continue
-        if job_dependency is None:
-            future_dict[job_name] = executor.submit(cmd_executor.run, cmd_args)
-            submit_flags[idx] = True
-            print("submit because no dependency")
-        else:
-            ok_to_run = True
-            for dependent_job_name in job_dependency:
-                future_item = future_dict.get(dependent_job_name)
-                if future_item is None or not future_item.done():
-                    ok_to_run = False
-                    break
-            if ok_to_run:
-                future_dict[job_name] = executor.submit(cmd_executor.run, cmd_args)
-                submit_flags[idx] = True
-                print("submit with dependency met: {}".format(job_dependency))
-        if np.all(submit_flags):
-            print("submit finished")
-            break
-        idx = (idx + 1) % len(job_list)
-        time.sleep(0.5)
-    
-    futures = future_dict.values()
+    coordinator = Coordinator(4)
+    futures = coordinator.submit(job_list)
     # Note: submit job already started.
 
     # 各futureの完了を待ち、結果を取得。
@@ -74,7 +39,6 @@ def main(args):
     # すべてのタスクの完了を待ち、後始末をする。
     # 完了していないタスクがあればブロックされる。
     # (上でas_completedをすべてイテレートしているので、実際にはこの時点で完了していないタスクは無いはず。)
-    executor.shutdown()
 
 
 def parse_args():
