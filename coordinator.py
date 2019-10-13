@@ -50,7 +50,8 @@ class Coordinator:
             idx = (idx + 1) % len(job_list)
             time.sleep(0.5)  # TODO: may not be needed
         
-        futures = future_dict.values()
-        self.future_list.append(futures)
+        futures = list(future_dict.values())
+        self.future_list += futures
         # Note: submit job already started.
         return self.future_list
+        # return futures
