@@ -14,20 +14,21 @@ def run_pipeline(p_id, runner):
 
 
 def main(args):
-    sleep_runner = SleepBashRunner()
-    sleep_runner1 = SleepBashRunner1()
-    sleep_runner2 = SleepBashRunner2()
-    # run_pipeline("2", sleep_runner)
-        # Executorオブジェクトを作成
+    # To wrap
+    # def make_runner1():
+    #     return SleepBashRunner1
+    # def make_runner2():
+    #     return SleepBashRunner2
     job_list = [ # job-name, runner, args, depends_on
-        ["task1", sleep_runner1, "task1", None],
-        ["task1-1", sleep_runner1, "task1-1", ["task1"]],
-        ["task1-2", sleep_runner1, "task1-2", ["task1"]],
-        ["task2", sleep_runner2, "task2", ["task1-1", "task1-2"]],
-        ["task2-1", sleep_runner2, "task2-1", ["task2"]],
-        ["task2-2", sleep_runner2, "task2-2", ["task2"]],
-        ["task3", sleep_runner1, "task3", None],
+        ["task1", SleepBashRunner1, "task1", None],
+        ["task1-1", SleepBashRunner1, "task1-1", ["task1"]],
+        ["task1-2", SleepBashRunner1, "task1-2", ["task1"]],
+        ["task2", SleepBashRunner2, "task2", ["task1-1", "task1-2"]],
+        ["task2-1", SleepBashRunner2, "task2-1", ["task2"]],
+        ["task2-2", SleepBashRunner2, "task2-2", ["task2"]],
+        ["task3", SleepBashRunner1, "task3", None],
     ]
+
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.
     if args.coordinator_type == "Sequential":
         print("Sequential run start =====================")

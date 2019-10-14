@@ -10,7 +10,8 @@ import numpy as np
 class SequentialCoordinator:
     def submit(self, job_list):
         results = []
-        for job_name, cmd_runner, cmd_args, job_dependency in job_list:
+        for job_name, make_runner, cmd_args, job_dependency in job_list:
+            cmd_runner = make_runner()
             results.append(cmd_runner.run(cmd_args))
         return results
 
@@ -40,13 +41,14 @@ class PoolCoordinator:
         submit_flags = [False] * len(job_list)
         while True:
             # print ("idx: {} started".format(idx))
-            job_name, cmd_runner, cmd_args, job_dependency = job_list[idx]
+            job_name, make_runner, cmd_args, job_dependency = job_list[idx]
             # print(job_list[idx])
             # print(job_name, cmd_runner, cmd_args, job_dependency)
             if submit_flags[idx]:
                 idx = (idx + 1) % len(job_list)
                 continue
             if job_dependency is None:
+                cmd_runner = make_runner()
                 future_dict[job_name] = self.executor.submit(cmd_runner.run, cmd_args)
                 submit_flags[idx] = True
                 print("submit because no dependency")
@@ -58,6 +60,7 @@ class PoolCoordinator:
                         ok_to_run = False
                         break
                 if ok_to_run:
+                    cmd_runner = make_runner()
                     future_dict[job_name] = self.executor.submit(cmd_runner.run, cmd_args)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
