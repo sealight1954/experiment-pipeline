@@ -1,5 +1,5 @@
 
-class BaseExecutor():
+class BaseRunner():
     def __init__(self):
         NotImplementedError()
     

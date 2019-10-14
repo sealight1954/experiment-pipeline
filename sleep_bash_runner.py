@@ -1,5 +1,5 @@
 from job_script.job_sleep import run_job_sleep
-from base_bash_executor import BaseBashRunner
+from base_bash_runner import BaseBashRunner
 
 class SleepBashRunner(BaseBashRunner):
     def __init__(self):

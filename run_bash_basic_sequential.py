@@ -2,24 +2,24 @@ import argparse
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-from sleep_bash_executor import SleepBashExecutor
+from sleep_bash_runner import SleepBashRunner
 
-def run_pipeline(p_id, executor):
+def run_pipeline(p_id, runner):
     for i in range(3):
-        executor.run("{}-{}".format(p_id, i))
+        runner.run("{}-{}".format(p_id, i))
     return "{} finished".format(p_id)
 
 
 def main(args):
-    sleep_executor = SleepBashExecutor()
-    # run_pipeline("2", sleep_executor)
+    sleep_runner = SleepBashRunner()
+    # run_pipeline("2", sleep_runner)
         # Executorオブジェクトを作成
     executor = ProcessPoolExecutor(max_workers=4)
 
     # Executorオブジェクトにタスクをsubmitし、同数だけfutureオブジェクトを得る。
     # タスクの実行は、submit()を呼び出した瞬間から開始される。
     # ユーザーはこれを渡す
-    futures = [executor.submit(run_pipeline,t, sleep_executor) for t in range(3)]
+    futures = [executor.submit(run_pipeline,t, sleep_runner) for t in range(3)]
     time.sleep(5)
     # Note: submit job already started.
     print("Submit finished")

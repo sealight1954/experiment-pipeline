@@ -3,21 +3,21 @@ import time
 import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-from sleep_bash_executor import SleepBashExecutor, SleepBashExecutor1, SleepBashExecutor2
+from sleep_bash_runner import SleepBashRunner, SleepBashRunner1, SleepBashRunner2
 from coordinator import Coordinator
 
-def run_pipeline(p_id, executor):
+def run_pipeline(p_id, runner):
     for i in range(3):
-        executor.run("{}-{}".format(p_id, i))
+        runner.run("{}-{}".format(p_id, i))
     return "{} finished".format(p_id)
 
 def main(args):
-    sleep_executor = SleepBashExecutor()
-    sleep_runner1 = SleepBashExecutor1()
-    sleep_runner2 = SleepBashExecutor2()
-    # run_pipeline("2", sleep_executor)
+    sleep_runner = SleepBashRunner()
+    sleep_runner1 = SleepBashRunner1()
+    sleep_runner2 = SleepBashRunner2()
+    # run_pipeline("2", sleep_runner)
         # Executorオブジェクトを作成
-    job_list = [ # job-name, executor, args, depends_on
+    job_list = [ # job-name, runner, args, depends_on
         ["task1", sleep_runner1, "task1", None],
         ["task1-1", sleep_runner1, "task1-1", ["task1"]],
         ["task1-2", sleep_runner1, "task1-2", ["task1"]],

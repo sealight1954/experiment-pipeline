@@ -23,14 +23,14 @@ class Coordinator:
         submit_flags = [False] * len(job_list)
         while True:
             # print ("idx: {} started".format(idx))
-            job_name, cmd_executor, cmd_args, job_dependency = job_list[idx]
+            job_name, cmd_runner, cmd_args, job_dependency = job_list[idx]
             # print(job_list[idx])
-            # print(job_name, cmd_executor, cmd_args, job_dependency)
+            # print(job_name, cmd_runner, cmd_args, job_dependency)
             if submit_flags[idx]:
                 idx = (idx + 1) % len(job_list)
                 continue
             if job_dependency is None:
-                future_dict[job_name] = self.executor.submit(cmd_executor.run, cmd_args)
+                future_dict[job_name] = self.executor.submit(cmd_runner.run, cmd_args)
                 submit_flags[idx] = True
                 print("submit because no dependency")
             else:
@@ -41,7 +41,7 @@ class Coordinator:
                         ok_to_run = False
                         break
                 if ok_to_run:
-                    future_dict[job_name] = self.executor.submit(cmd_executor.run, cmd_args)
+                    future_dict[job_name] = self.executor.submit(cmd_runner.run, cmd_args)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
             if np.all(submit_flags):

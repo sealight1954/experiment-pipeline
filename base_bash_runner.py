@@ -1,6 +1,6 @@
 import subprocess
 
-from base_executor import BaseExecutor
+from base_runner import BaseRunner
 
 
 def run_cmd_and_print(cmd, isReturnJobid=False):
@@ -12,7 +12,7 @@ def run_cmd_and_print(cmd, isReturnJobid=False):
         return int(comp_proc.stdout)
 
 
-class BaseBashExecutor(BaseExecutor):
+class BaseBashRunner(BaseRunner):
     def __init__(self, cmd_lst):
         self.base_commands = cmd_lst
 
