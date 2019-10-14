@@ -4,7 +4,7 @@ import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from sleep_bash_runner import SleepBashRunner, SleepBashRunner1, SleepBashRunner2
-from coordinator import ProcessPoolCoordinator, SequentialCoordinator
+from coordinator import PoolCoordinator, SequentialCoordinator
 
 
 def run_pipeline(p_id, runner):
@@ -29,13 +29,13 @@ def main(args):
         ["task3", sleep_runner1, "task3", None],
     ]
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.
-    if args.sequential_run:
+    if args.coordinator_type == "Sequential":
         print("Sequential run start =====================")
         coordinator = SequentialCoordinator()
         results = coordinator.submit(job_list)
-    else:
-        print("Parallel run start =====================")
-        coordinator = ProcessPoolCoordinator(4)
+    elif args.coordinator_type == "ProcessPool" or args.coordinator_type == "ThreadPool":
+        print("Parallel ({}) run start =====================".format(args.coordinator_type))
+        coordinator = PoolCoordinator(4, args.coordinator_type)
         futures = coordinator.submit(job_list)
         # Note: submit job already started.
 
@@ -54,7 +54,8 @@ def main(args):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sequential-run', action='store_true',
+    parser.add_argument('--coordinator-type', default="ProcessPool",
+                        choices=["ProcessPool", "ThreadPool", "Sequential"],
                         help='Run commands in sequential manner. Default: parallel using pool')
     return parser.parse_args()
 

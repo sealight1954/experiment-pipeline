@@ -1,5 +1,5 @@
 import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 # See: https://github.com/microsoft/ptvsd/issues/1056
 import multiprocessing
 multiprocessing.set_start_method('spawn', True)
@@ -15,9 +15,15 @@ class SequentialCoordinator:
         return results
 
 
-class ProcessPoolCoordinator:
-    def __init__(self, max_workers=4):
-        self.executor = ProcessPoolExecutor(max_workers=max_workers)
+class PoolCoordinator:
+    def __init__(self, max_workers=4, coordinator_type="ProcessPool"):
+        if coordinator_type == "ProcessPool":
+            self.executor = ProcessPoolExecutor(max_workers=max_workers)
+        elif coordinator_type == "ThreadPool":
+            self.executor = ThreadPoolExecutor(max_workers=max_workers)
+        else:
+            print("Invalid coordinator_type: {}".format(coordinator_type))
+            exit(1)
         self.future_list = []
 
     def submit(self, job_list):
