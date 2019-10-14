@@ -32,5 +32,5 @@
     - Skip if result file already exists. and skip to next job
     - If sbatch, do not even want to submit job?
         - -> If system has max-number-of-jobs property, this will allow other users' job go ahead while executing the skip job.
-- [ ] Sequential Coordinator
+- [x] Sequential Coordinator
     - Sequential Run

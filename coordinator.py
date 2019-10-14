@@ -1,5 +1,8 @@
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
+# See: https://github.com/microsoft/ptvsd/issues/1056
+import multiprocessing
+multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
 

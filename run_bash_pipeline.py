@@ -6,10 +6,12 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from sleep_bash_runner import SleepBashRunner, SleepBashRunner1, SleepBashRunner2
 from coordinator import ProcessPoolCoordinator, SequentialCoordinator
 
+
 def run_pipeline(p_id, runner):
     for i in range(3):
         runner.run("{}-{}".format(p_id, i))
     return "{} finished".format(p_id)
+
 
 def main(args):
     sleep_runner = SleepBashRunner()
@@ -26,6 +28,7 @@ def main(args):
         ["task2-2", sleep_runner2, "task2-2", ["task2"]],
         ["task3", sleep_runner1, "task3", None],
     ]
+    # TODO: Output of submit() should be same type for Sequential and PoolParallel.
     if args.sequential_run:
         print("Sequential run start =====================")
         coordinator = SequentialCoordinator()
@@ -47,9 +50,6 @@ def main(args):
             # print("[{}]: Results:{}".format(idx, future.result()))
     for idx, result in enumerate(results):
         print("[{}]: Results: {}".format(idx, result))
-    # すべてのタスクの完了を待ち、後始末をする。
-    # 完了していないタスクがあればブロックされる。
-    # (上でas_completedをすべてイテレートしているので、実際にはこの時点で完了していないタスクは無いはず。)
 
 
 def parse_args():
