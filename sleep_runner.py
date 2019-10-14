@@ -8,6 +8,14 @@ class SleepRunner(BaseRunner):
     def run(self, id):
         run_job_sleep(n=5, id=id)
 
+
+class SleepRunner0(BaseRunner):
+    def __init__(self):
+        self.i = 1
+    
+    def run(self):
+        run_job_sleep(n=5, id="0")
+
 class SleepRunner1(BaseRunner):
     def __init__(self):
         self.i = 1
@@ -19,5 +27,5 @@ class SleepRunner2(BaseRunner):
     def __init__(self):
         self.i = 1
     
-    def run(self, id):
-        run_job_sleep(n=5, id="{}_2_func".format(id))
+    def run(self, id, n):
+        run_job_sleep(n=n, id="{}_2_func".format(id))

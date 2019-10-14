@@ -18,3 +18,5 @@ class BaseBashRunner(BaseRunner):
 
     def run(self, args):
         run_cmd_and_print(self.base_commands + args)
+
+        

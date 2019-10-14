@@ -7,12 +7,28 @@ multiprocessing.set_start_method('spawn', True)
 import numpy as np
 
 
+def run_with_args(make_runner, num_args, cmd_args):
+    cmd_runner = make_runner()
+    if num_args == 0:
+        return cmd_runner.run()
+    elif num_args == 1:
+        return cmd_runner.run(cmd_args)
+    else:
+        return cmd_runner.run(*cmd_args)
+
+
 class SequentialCoordinator:
     def submit(self, job_list):
         results = []
-        for job_name, make_runner, cmd_args, job_dependency in job_list:
-            cmd_runner = make_runner()
-            results.append(cmd_runner.run(cmd_args))
+        for job_name, make_runner, num_args, cmd_args, job_dependency in job_list:
+            # cmd_runner = make_runner()
+            # if num_args == 0:
+            #     results.append(cmd_runner.run())
+            # elif num_args == 1:
+            #     results.append(cmd_runner.run(cmd_args))
+            # else:
+            #     results.append(cmd_runner.run(*cmd_args))
+            results.append(run_with_args(make_runner, num_args, cmd_args))
         return results
 
 
@@ -26,6 +42,15 @@ class PoolCoordinator:
             print("Invalid coordinator_type: {}".format(coordinator_type))
             exit(1)
         self.future_list = []
+
+    def _submit_with_args(self, make_runner, num_args, cmd_args):
+        cmd_runner = make_runner()
+        if num_args == 0:
+            return self.executor.submit(cmd_runner.run)
+        elif num_args == 1:
+            return self.executor.submit(cmd_runner.run, cmd_args)
+        else:
+            return self.executor.submit(cmd_runner.run, *cmd_args)
 
     def submit(self, job_list):
         """
@@ -41,15 +66,14 @@ class PoolCoordinator:
         submit_flags = [False] * len(job_list)
         while True:
             # print ("idx: {} started".format(idx))
-            job_name, make_runner, cmd_args, job_dependency = job_list[idx]
+            job_name, make_runner, num_args, cmd_args, job_dependency = job_list[idx]
             # print(job_list[idx])
             # print(job_name, cmd_runner, cmd_args, job_dependency)
             if submit_flags[idx]:
                 idx = (idx + 1) % len(job_list)
                 continue
             if job_dependency is None:
-                cmd_runner = make_runner()
-                future_dict[job_name] = self.executor.submit(cmd_runner.run, cmd_args)
+                future_dict[job_name] = self._submit_with_args(make_runner, num_args, cmd_args)
                 submit_flags[idx] = True
                 print("submit because no dependency")
             else:
@@ -60,8 +84,7 @@ class PoolCoordinator:
                         ok_to_run = False
                         break
                 if ok_to_run:
-                    cmd_runner = make_runner()
-                    future_dict[job_name] = self.executor.submit(cmd_runner.run, cmd_args)
+                    future_dict[job_name] = self._submit_with_args(make_runner, num_args, cmd_args)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
             if np.all(submit_flags):

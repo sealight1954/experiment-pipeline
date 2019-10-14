@@ -4,7 +4,7 @@ import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from sleep_bash_runner import SleepBashRunner, SleepBashRunner1, SleepBashRunner2
-from sleep_runner import SleepRunner1, SleepRunner2
+from sleep_runner import SleepRunner0, SleepRunner1, SleepRunner2
 from coordinator import PoolCoordinator, SequentialCoordinator
 
 
@@ -20,20 +20,23 @@ def main(args):
     #     return SleepBashRunner1
     # def make_runner2():
     #     return SleepBashRunner2
-    if args.runner_type == "Bash":
-        make_runner1 = SleepBashRunner1
-        make_runner2 = SleepBashRunner2
-    elif args.runner_type == "Function":
-        make_runner1 = SleepRunner1
-        make_runner2 = SleepRunner2
+    # if args.runner_type == "Bash":
+    make_bash_runner1 = SleepBashRunner1
+    make_bash_runner2 = SleepBashRunner2
+    # elif args.runner_type == "Function":
+
+    make_func_runner0 = SleepRunner0
+    make_func_runner1 = SleepRunner1
+    make_func_runner2 = SleepRunner2
     job_list = [ # job-name, runner, args, depends_on
-        ["task1", make_runner1, "task1", None],
-        ["task1-1", make_runner1, "task1-1", ["task1"]],
-        ["task1-2", make_runner1, "task1-2", ["task1"]],
-        ["task2", make_runner2, "task2", ["task1-1", "task1-2"]],
-        ["task2-1", make_runner2, "task2-1", ["task2"]],
-        ["task2-2", make_runner2, "task2-2", ["task2"]],
-        ["task3", make_runner1, "task3", None],
+        ["task1", make_bash_runner1, 1, "task1", None],
+        ["task1-1", make_func_runner1, 1, "task1-1", ["task1"]],
+        ["task1-2", make_func_runner1, 1, "task1-2", ["task1"]],
+        ["task2", make_bash_runner2, 2, ["task2", 4], ["task1-1", "task1-2"]],
+        # ["task2", make_bash_runner2, ("task2", 4), None],
+        ["task2-1", make_func_runner2, 2, ["task2-1", 4], ["task2"]],
+        ["task2-2", make_func_runner2, 2, ["task2-2", 4], ["task2"]],
+        ["task3", make_func_runner0, 0, None, None],
     ]
 
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.

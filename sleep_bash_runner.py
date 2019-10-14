@@ -27,6 +27,7 @@ class SleepBashRunner2(BaseBashRunner):
         # base_command_args = []
         super(SleepBashRunner2, self).__init__(base_command_args)
     
-    def run(self, id):
+    def run(self, id, n):
         args = ["--id", "{}_2".format(id)]
+        args += ["--n", "{}".format(n)]
         return super().run(args)
