@@ -1,10 +1,14 @@
 import time
+import os
+import datetime
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 # See: https://github.com/microsoft/ptvsd/issues/1056
 import multiprocessing
 multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
+
+from base_bash_runner import BaseBashRunner
 
 
 def run_with_args(make_runner, num_args, cmd_args):
@@ -16,27 +20,46 @@ def run_with_args(make_runner, num_args, cmd_args):
     else:
         return cmd_runner.run(*cmd_args)
 
+def dry_run_with_args(make_runner, num_args, cmd_args):
+    cmd_runner = make_runner()
+    if num_args == 0:
+        return cmd_runner.run()
+    elif num_args == 1:
+        return cmd_runner.run(cmd_args)
+    else:
+        return cmd_runner.run(*cmd_args)
 
-class SequentialCoordinator:
-    def __init__(self, log_dir="./results"):
+sbatch_base_str = """
+#!/bin/bash
+#SBATCH --output=results/res_%j.txt
+#SBATCH --error=results/err_%j.txt
+#
+#SBATCH --ntasks=1
+#SBATCH --time=10:00
+#SBATCH --mem-per-cpu=100
+srun {}
+"""
+
+
+class SbatchCoordinator:
+    def __init__(self, log_dir):
         self.log_dir = log_dir
 
     def submit(self, job_list):
         results = []
         for job_name, make_runner, num_args, cmd_args, job_dependency in job_list:
-            # cmd_runner = make_runner()
-            # if num_args == 0:
-            #     results.append(cmd_runner.run())
-            # elif num_args == 1:
-            #     results.append(cmd_runner.run(cmd_args))
-            # else:
-            #     results.append(cmd_runner.run(*cmd_args))
+            cmd_runner = make_runner()
+            assert isinstance(cmd_runner, BaseBashRunner), "Must be subclass of BaseBashRunner. {}".format(cmd_runner)
+            now = datetime.datetime.now()
+            tmp_str = now.strftime('%Y%m%d%H%M%S')
+            tmp_dir = os.path.join(self.log_dir, "tmp")
+            cmd = cmd_runner.dry_run()
             results.append(run_with_args(make_runner, num_args, cmd_args))
         return results
 
 
 class PoolCoordinator:
-    def __init__(self, log_dir="./results", max_workers=4, coordinator_type="ProcessPool"):
+    def __init__(self, max_workers=4, coordinator_type="ProcessPool"):
         if coordinator_type == "ProcessPool":
             self.executor = ProcessPoolExecutor(max_workers=max_workers)
         elif coordinator_type == "ThreadPool":
@@ -45,7 +68,6 @@ class PoolCoordinator:
             print("Invalid coordinator_type: {}".format(coordinator_type))
             exit(1)
         self.future_list = []
-        self.log_dir = log_dir
 
     def _submit_with_args(self, make_runner, num_args, cmd_args):
         cmd_runner = make_runner()

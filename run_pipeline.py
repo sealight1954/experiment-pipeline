@@ -3,7 +3,7 @@ import time
 import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-from sleep_bash_runner import SleepBashRunner, SleepBashRunner1, SleepBashRunner2
+from sleep_bash_runner import SleepBashRunner0, SleepBashRunner1, SleepBashRunner2
 from sleep_runner import SleepRunner0, SleepRunner1, SleepRunner2
 from coordinator import PoolCoordinator, SequentialCoordinator
 
@@ -15,6 +15,7 @@ def run_pipeline(p_id, runner):
 
 
 def main(args):
+    make_bash_runner0 = SleepBashRunner0
     make_bash_runner1 = SleepBashRunner1
     make_bash_runner2 = SleepBashRunner2
     make_func_runner0 = SleepRunner0
@@ -28,6 +29,7 @@ def main(args):
         ["task2-1", make_func_runner2, 2, ["task2-1", 4], ["task2"]],
         ["task2-2", make_func_runner2, 2, ["task2-2", 4], ["task2"]],
         ["task3", make_func_runner0, 0, None, None],
+        ["task4", make_bash_runner0, 0, None, None],
     ]
 
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.
@@ -37,7 +39,7 @@ def main(args):
         results = coordinator.submit(job_list)
     elif args.coordinator_type == "ProcessPool" or args.coordinator_type == "ThreadPool":
         print("Parallel ({}) run start =====================".format(args.coordinator_type))
-        coordinator = PoolCoordinator(4, args.coordinator_type)
+        coordinator = PoolCoordinator(max_workers=4, coordinator_type=args.coordinator_type)
         futures = coordinator.submit(job_list)
         # Note: submit job already started.
 

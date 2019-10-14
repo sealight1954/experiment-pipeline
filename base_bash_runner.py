@@ -16,7 +16,10 @@ class BaseBashRunner(BaseRunner):
     def __init__(self, cmd_lst):
         self.base_commands = cmd_lst
 
-    def run(self, args):
+    def run(self, *args):
         run_cmd_and_print(self.base_commands + args)
 
-        
+    def dry_run(self, *args):
+        commands = " ".join(self.base_commands + args)
+        print(commands)
+        return commands
