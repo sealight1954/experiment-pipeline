@@ -37,3 +37,4 @@
 - [x] Interface should be constructor, not instance.
     - For fork-safe execution
 - [ ] Handle release worker.
+- [ ] Different number of arguments
