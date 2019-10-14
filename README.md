@@ -28,4 +28,9 @@
         - Generate temporaly sbatch script, get job id.
 - [ ] Implement logger
 - [ ] See whether coordinator can work with ThreadPoolExecutor
-- [ ] 
+- [ ] --use-cache option
+    - Skip if result file already exists. and skip to next job
+    - If sbatch, do not even want to submit job?
+        - -> If system has max-number-of-jobs property, this will allow other users' job go ahead while executing the skip job.
+- [ ] Sequential Coordinator
+    - Sequential Run

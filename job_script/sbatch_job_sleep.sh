@@ -2,8 +2,8 @@
 #%x not works for ver.15. ver. 17?
 # https://stackoverflow.com/questions/50242293/using-sbatch-job-name-as-a-variable-in-file-output
 # https://slurm.schedmd.com/sbatch.html
-#SBATCH --output=res_%j.txt
-#SBATCH --error=err_%j.txt
+#SBATCH --output=results/res_%j.txt
+#SBATCH --error=results/err_%j.txt
 #
 #SBATCH --ntasks=1
 #SBATCH --time=10:00

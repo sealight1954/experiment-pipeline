@@ -13,18 +13,18 @@ def run_pipeline(p_id, executor):
 
 def main(args):
     sleep_executor = SleepBashExecutor()
-    sleep_executor1 = SleepBashExecutor1()
-    sleep_executor2 = SleepBashExecutor2()
+    sleep_runner1 = SleepBashExecutor1()
+    sleep_runner2 = SleepBashExecutor2()
     # run_pipeline("2", sleep_executor)
         # Executorオブジェクトを作成
     job_list = [ # job-name, executor, args, depends_on
-        ["task1", sleep_executor1, "task1", None],
-        ["task1-1", sleep_executor1, "task1-1", ["task1"]],
-        ["task1-2", sleep_executor1, "task1-2", ["task1"]],
-        ["task2", sleep_executor2, "task2", ["task1-1", "task1-2"]],
-        ["task2-1", sleep_executor2, "task2-1", ["task2"]],
-        ["task2-2", sleep_executor2, "task2-2", ["task2"]],
-        ["task3", sleep_executor1, "task3", None],
+        ["task1", sleep_runner1, "task1", None],
+        ["task1-1", sleep_runner1, "task1-1", ["task1"]],
+        ["task1-2", sleep_runner1, "task1-2", ["task1"]],
+        ["task2", sleep_runner2, "task2", ["task1-1", "task1-2"]],
+        ["task2-1", sleep_runner2, "task2-1", ["task2"]],
+        ["task2-2", sleep_runner2, "task2-2", ["task2"]],
+        ["task3", sleep_runner1, "task3", None],
     ]
     coordinator = Coordinator(4)
     futures = coordinator.submit(job_list)
