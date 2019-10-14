@@ -6,8 +6,6 @@ multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
 
-from base_bash_runner import run_cmd_and_print
-
 
 def run_with_args(make_runner, num_args, cmd_args):
     cmd_runner = make_runner()
@@ -25,7 +23,7 @@ class SequentialCoordinator:
 
     def submit(self, job_list):
         results = []
-        for job_name, command_args, job_dependency in job_list:
+        for job_name, make_runner, num_args, cmd_args, job_dependency in job_list:
             # cmd_runner = make_runner()
             # if num_args == 0:
             #     results.append(cmd_runner.run())
@@ -33,7 +31,7 @@ class SequentialCoordinator:
             #     results.append(cmd_runner.run(cmd_args))
             # else:
             #     results.append(cmd_runner.run(*cmd_args))
-            results.append(run_cmd_and_print(command_args))
+            results.append(run_with_args(make_runner, num_args, cmd_args))
         return results
 
 
@@ -72,14 +70,14 @@ class PoolCoordinator:
         submit_flags = [False] * len(job_list)
         while True:
             # print ("idx: {} started".format(idx))
-            job_name, cmd_args, job_dependency = job_list[idx]
+            job_name, make_runner, num_args, cmd_args, job_dependency = job_list[idx]
             # print(job_list[idx])
             # print(job_name, cmd_runner, cmd_args, job_dependency)
             if submit_flags[idx]:
                 idx = (idx + 1) % len(job_list)
                 continue
             if job_dependency is None:
-                future_dict[job_name] = self.executor.submit(run_cmd_and_print, cmd_args)
+                future_dict[job_name] = self._submit_with_args(make_runner, num_args, cmd_args)
                 submit_flags[idx] = True
                 print("submit because no dependency")
             else:
@@ -90,7 +88,7 @@ class PoolCoordinator:
                         ok_to_run = False
                         break
                 if ok_to_run:
-                    future_dict[job_name] = self.executor.submit(run_cmd_and_print, cmd_args)
+                    future_dict[job_name] = self._submit_with_args(make_runner, num_args, cmd_args)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
             if np.all(submit_flags):

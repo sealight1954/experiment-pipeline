@@ -22,7 +22,7 @@
 - [x] Generate class "Coordinator":
     - input: list of jobs including dependency
     - action: submit jobs with dependencies
-- [ ] Slurm coordinator
+- [x] Slurm coordinator
     - interface: same as coordinator
     - action: submit jobs with dependencies
         - Generate temporaly sbatch script, get job id.

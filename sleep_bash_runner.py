@@ -1,6 +1,13 @@
 from job_script.job_sleep import run_job_sleep
 from base_bash_runner import BaseBashRunner
 
+
+def get_sleep_cmd(id, n):
+    command = ["python", "job_script/job_sleep.py"]
+    command += ["--id", "{}_cmd".format(id)]
+    command += ["--n", "{}".format(n)]
+    return command
+
 class SleepBashRunner0(BaseBashRunner):
     def __init__(self):
         base_command_args = ["python", "job_script/job_sleep.py"]

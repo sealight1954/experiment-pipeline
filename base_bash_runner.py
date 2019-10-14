@@ -9,7 +9,7 @@ def run_cmd_and_print(cmd, isReturnJobid=False):
     print("stdout: {}".format(comp_proc.stdout))
     print("stderr: {}".format(comp_proc.stderr))
     if isReturnJobid:
-        return int(comp_proc.stdout)
+        return comp_proc.stdout.rstrip().decode("utf-8") 
 
 
 class BaseBashRunner(BaseRunner):
