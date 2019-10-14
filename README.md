@@ -37,4 +37,5 @@
 - [x] Interface should be constructor, not instance.
     - For fork-safe execution
 - [ ] Handle release worker.
-- [ ] Different number of arguments
+- [x] Different number of arguments
+- [ ] Support dry-run for bash
