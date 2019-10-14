@@ -1,23 +1,23 @@
 from job_script.job_sleep import run_job_sleep
-from base_executor import BaseExecutor
+from base_runner import BaseRunner
 
-class SleepExecutor(BaseExecutor):
+class SleepRunner(BaseRunner):
     def __init__(self):
         self.i = 1
     
     def run(self, id):
         run_job_sleep(n=5, id=id)
 
-class SleepExecutor1(BaseExecutor):
+class SleepRunner1(BaseRunner):
     def __init__(self):
         self.i = 1
     
     def run(self, id):
-        run_job_sleep(n=5, id="{}_1".format(id))
+        run_job_sleep(n=5, id="{}_1_func".format(id))
 
-class SleepExecutor2(BaseExecutor):
+class SleepRunner2(BaseRunner):
     def __init__(self):
         self.i = 1
     
     def run(self, id):
-        run_job_sleep(n=5, id="{}_2".format(id))
+        run_job_sleep(n=5, id="{}_2_func".format(id))
