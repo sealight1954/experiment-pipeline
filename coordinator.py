@@ -4,7 +4,15 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 
 
-class Coordinator:
+class SequentialCoordinator:
+    def submit(self, job_list):
+        results = []
+        for job_name, cmd_runner, cmd_args, job_dependency in job_list:
+            results.append(cmd_runner.run(cmd_args))
+        return results
+
+
+class ProcessPoolCoordinator:
     def __init__(self, max_workers=4):
         self.executor = ProcessPoolExecutor(max_workers=max_workers)
         self.future_list = []
