@@ -6,6 +6,7 @@
 - bash_coordinator.py
     - parallel executor of bash scripts
 - pipeline coordinator
+    `python run_bash_pipeline.py`
     - pipeline which represents following:
         ```
         task 1
@@ -27,3 +28,4 @@
         - Generate temporaly sbatch script, get job id.
 - [ ] Implement logger
 - [ ] See whether coordinator can work with ThreadPoolExecutor
+- [ ] 

@@ -33,8 +33,10 @@ def main(args):
     # 各futureの完了を待ち、結果を取得。
     # as_completed()は、与えられたfuturesの要素を完了順にたどるイテレータを返す。
     # 完了したタスクが無い場合は、ひとつ完了するまでブロックされる。
-    for future in as_completed(futures):
-        print(future.result()) # digest()の戻り値が表示される。
+    for idx, future in enumerate(as_completed(futures)):
+        # TODO: Want to describe associated jobs to see order of finish, requires future_list.
+        # job_name = [job_list[i] for i in range(len(job_list)) if future == futures[i]
+        print("[{}]: Results:{}".format(idx, future.result()))
 
     # すべてのタスクの完了を待ち、後始末をする。
     # 完了していないタスクがあればブロックされる。

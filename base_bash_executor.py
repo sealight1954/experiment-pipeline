@@ -1,7 +1,17 @@
 import subprocess
-from utils import run_cmd_and_print
 
 from base_executor import BaseExecutor
+
+
+def run_cmd_and_print(cmd, isReturnJobid=False):
+    comp_proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(comp_proc.args, comp_proc.returncode)
+    print("stdout: {}".format(comp_proc.stdout))
+    print("stderr: {}".format(comp_proc.stderr))
+    if isReturnJobid:
+        return int(comp_proc.stdout)
+
+
 class BaseBashExecutor(BaseExecutor):
     def __init__(self, cmd_lst):
         self.base_commands = cmd_lst
