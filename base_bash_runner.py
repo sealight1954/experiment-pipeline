@@ -17,9 +17,17 @@ class BaseBashRunner(BaseRunner):
         self.base_commands = cmd_lst
 
     def run(self, *args):
-        run_cmd_and_print(self.base_commands + args)
+        print(self.base_commands, args)
+        if args is None:
+            run_cmd_and_print(self.base_commands)
+        else:
+            run_cmd_and_print(self.base_commands + args)
 
     def dry_run(self, *args):
-        commands = " ".join(self.base_commands + args)
+
+        if args is None:
+            commands = " ".join(self.base_commands)
+        else:
+            commands = " ".join(self.base_commands + args)
         print(commands)
         return commands

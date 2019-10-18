@@ -26,9 +26,7 @@
     - interface: same as coordinator
     - action: submit jobs with dependencies
         - Generate temporaly sbatch script, get job id.
-- [ ] Implement logger
 - [x] See whether coordinator can work with ThreadPoolExecutor
-- [ ] --use-cache option
     - Skip if result file already exists. and skip to next job
     - If sbatch, do not even want to submit job?
         - -> If system has max-number-of-jobs property, this will allow other users' job go ahead while executing the skip job.
@@ -36,6 +34,17 @@
     - Sequential Run
 - [x] Interface should be constructor, not instance.
     - For fork-safe execution
-- [ ] Handle release worker.
 - [x] Different number of arguments
+- [ ] --use-cache option
+- [ ] Handle release worker.
+- [ ] Implement logger
 - [ ] Support dry-run for bash
+    - Base bash runner and coordinator
+    - Only support sequential? Process Pool, maybe okay, but sbatch it seems we need to immitate job-id
+    - Or we call dry_submit() for BaseCoordinator.
+    - Runner configuration seems tricky. we want to avoid modify every subclass of BaseBashRunner.
+- [ ] args to be **kwargs
+- [ ] run -> __call__
+- [ ] Base coordinator to cope with different cmd_args.
+    - callable function and cmd_args, or bash commands.
+- [ ] stdout and stderr to files.
