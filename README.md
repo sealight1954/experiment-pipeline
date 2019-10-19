@@ -39,20 +39,24 @@
 - [x] Interface should be constructor, not instance.
     - For fork-safe execution
 - [x] Different number of arguments
-- [ ] --use-cache option
-- [ ] Handle release worker.
-- [ ] Implement logger
 - [x] Support dry-run for bash, func
     - Base bash runner and coordinator
     - Only support sequential? Process Pool, maybe okay, but sbatch it seems we need to immitate job-id
-    - Or we call dry_submit() for BaseCoordinator.
+    - ~~Or we call dry_submit() for BaseCoordinator.~~
     - Runner configuration seems tricky. we want to avoid modify every subclass of BaseBashRunner.
 - [x] args to be **kwargs
     - Support Function Runner and Bash Runner.
 - [x] remove command specific runner class.
     - Assume every function takes kwargs, at least one argument required.
 - [x] run -> __call__
-- [ ] Base coordinator to cope with different cmd_args.
-    - callable function and cmd_args, or bash commands.
-- [ ] stdout and stderr to files.
 - [x] Sbatch support
+- [ ] --use-cache option
+- [x] Handle release worker.
+    - ProcessPoolExecutor.
+- [ ] Implement logger
+    - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u
+- [ ] CommandRunStrategy.
+    - CallableRunnerStrategy: callable function and cmd_args, or CommandStrategy: bash commands.
+- [ ] stdout and stderr to files.
+- [ ] stdout of coordinator should be commands to execute and corresponding log files.
+- [ ] Error handling. Stop when one command fails.

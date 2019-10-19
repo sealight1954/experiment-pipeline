@@ -1,3 +1,8 @@
+"""
+Runner class for sleep command.
+This script is deprecated since BaseFuncRunner, BaseBashRunner can be constructed with arguments.
+"""
+
 from job_script.job_sleep import run_job_sleep
 from base_runner import BaseRunner
 
