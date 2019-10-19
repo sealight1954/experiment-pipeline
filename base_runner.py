@@ -32,21 +32,14 @@ class BaseBashRunner(BaseRunner):
         runner.run(param1=param1, param2=param2) ...
         """
         print(self.base_cmd_args, kwargs)
+        dry_run = kwargs.pop('dry_run', False)
         cmd_args_to_run = self.base_cmd_args
-        print(kwargs)
         for key, value in kwargs.items():
             cmd_args_to_run += ["--{}".format(key), str(value)]
-
-        run_cmd_and_print(cmd_args_to_run)
-
-    def dry_run(self, *args):
-
-        if args is None:
-            commands = " ".join(self.base_cmd_args)
+        if dry_run:
+            print(" ".join(cmd_args_to_run))
         else:
-            commands = " ".join(self.base_cmd_args + args)
-        print(commands)
-        return commands
+            run_cmd_and_print(cmd_args_to_run)
 
 
 # TODO: really need?
@@ -55,4 +48,8 @@ class BaseFuncRunner(BaseRunner):
         self.run_func = run_func
 
     def __call__(self, **kwargs):
-        self.run_func(**kwargs)
+        dry_run = kwargs.pop("dry_run", False)
+        if dry_run:
+            print("Function: {}, Arguments: {}".format(self.run_func.__name__, kwargs))
+        else:
+            self.run_func(**kwargs)

@@ -16,10 +16,11 @@ class SequentialCoordinator:
     def __init__(self, log_dir="./results"):
         self.log_dir = log_dir
 
-    def submit(self, job_list):
+    def submit(self, job_list, dry_run=False):
         results = []
         for job_name, make_runner, cmd_kwargs, job_dependency in job_list:
             cmd_runner = make_runner()
+            cmd_kwargs["dry_run"] = dry_run
             results.append(cmd_runner(**cmd_kwargs))
         return results
 
@@ -40,7 +41,7 @@ class PoolCoordinator:
     #     cmd_runner = make_runner()
     #     cmd_runner(**kwargs)
 
-    def submit(self, job_list):
+    def submit(self, job_list, dry_run=False):
         """
         Submit jobs to executor.
         Note that if there is dependency, it waits the 
@@ -62,6 +63,7 @@ class PoolCoordinator:
                 continue
             if job_dependency is None:
                 cmd_runner = make_runner()
+                cmd_kwargs["dry_run"] = dry_run
                 future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
                 submit_flags[idx] = True
                 print("submit because no dependency")
@@ -74,6 +76,7 @@ class PoolCoordinator:
                         break
                 if ok_to_run:
                     cmd_runner = make_runner()
+                    cmd_kwargs["dry_run"] = dry_run
                     future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
@@ -84,7 +87,14 @@ class PoolCoordinator:
             time.sleep(0.5)  # TODO: may not be needed
         
         futures = list(future_dict.values())
-        self.future_list += futures
-        # Note: submit job already started.
-        return self.future_list
+        # 各futureの完了を待ち、結果を取得。
+        # as_completed()は、与えられたfuturesの要素を完了順にたどるイテレータを返す。
+        # 完了したタスクが無い場合は、ひとつ完了するまでブロックされる。
+        results = []
+        for idx, future in enumerate(as_completed(futures)):
+            # TODO: Want to describe associated jobs to see order of finish, requires future_list.
+            # job_name = [job_list[i] for i in range(len(job_list)) if future == futures[i]
+            results.append(future.result())
+            # print("[{}]: Results:{}".format(idx, future.result()))
+        return results
         # return futures

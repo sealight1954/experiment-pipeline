@@ -45,9 +45,9 @@
     - Runner configuration seems tricky. we want to avoid modify every subclass of BaseBashRunner.
 - [x] args to be **kwargs
     - Support Function Runner and Bash Runner.
-- [ ] remove command specific runner class.
+- [x] remove command specific runner class.
     - Assume every function takes kwargs, at least one argument required.
-- [ ] run -> __call__
+- [x] run -> __call__
 - [ ] Base coordinator to cope with different cmd_args.
     - callable function and cmd_args, or bash commands.
 - [ ] stdout and stderr to files.
