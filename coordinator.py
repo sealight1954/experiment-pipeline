@@ -93,5 +93,6 @@ class PoolCoordinator:
             # job_name = [job_list[i] for i in range(len(job_list)) if future == futures[i]
             results.append(future.result())
             # print("[{}]: Results:{}".format(idx, future.result()))
+        self.executor.shutdown()
         return results
         # return futures
