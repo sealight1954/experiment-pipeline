@@ -30,7 +30,7 @@ def dry_run_with_args(make_runner, num_args, cmd_args):
         return cmd_runner.run(*cmd_args)
 
 sbatch_base_str = """#!/bin/bash
-#SBATCH --output={log_dir}/res_{job_name}_%j.txt
+#SBATCH --output={log_dir}/out_{job_name}_%j.txt
 #SBATCH --error={log_dir}/err_{job_name}_%j.txt
 #
 #SBATCH --ntasks=1

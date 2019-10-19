@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # See: https://github.com/microsoft/ptvsd/issues/1056
 import multiprocessing
 multiprocessing.set_start_method('spawn', True)
-from sleep_runner import SleepRunner0
+from sleep_runner import SleepRunner1
 
 def run_pipeline(p_id, executor):
     for i in range(3):
@@ -13,7 +13,7 @@ def run_pipeline(p_id, executor):
 
 
 def main(args):
-    sleep_runner = SleepRunner0()
+    sleep_runner = SleepRunner1()
     # run_pipeline("2", sleep_runner)
         # Executorオブジェクトを作成
     executor = ProcessPoolExecutor(max_workers=4)
