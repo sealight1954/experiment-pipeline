@@ -6,6 +6,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # from sleep_bash_runner import SleepBashRunner0, SleepBashRunner1, SleepBashRunner2
 # from sleep_runner import SleepRunner0, SleepRunner1, SleepRunner2
 from coordinator import PoolCoordinator, SequentialCoordinator
+from sbatch_coordinator import SbatchCoordinator
 from base_runner import BaseBashRunner, BaseRunner, BaseFuncRunner
 from job_script.job_sleep import run_job_sleep
 
@@ -40,7 +41,8 @@ def main(args):
     make_coordinator = {
         "Sequential": SequentialCoordinator,
         "ProcessPool": lambda: PoolCoordinator(max_workers=4, coordinator_type="ProcessPool"),
-        "ThreadPool": lambda: PoolCoordinator(max_workers=4, coordinator_type="ThreadPool")}.get(
+        "ThreadPool": lambda: PoolCoordinator(max_workers=4, coordinator_type="ThreadPool"),
+        "Sbatch": SbatchCoordinator}.get(
             args.coordinator_type, SequentialCoordinator
         )
     coordinator = make_coordinator()
@@ -59,7 +61,7 @@ def parse_args():
                         choices=["Bash", "Function"],
                         help='How to run commands. Bash for call from bash, Func for function call.')
     parser.add_argument('--coordinator-type', default="ProcessPool",
-                        choices=["ProcessPool", "ThreadPool", "Sequential"],
+                        choices=["ProcessPool", "ThreadPool", "Sequential", "Sbatch"],
                         help='Run commands in sequential manner. Default: parallel using pool')
     return parser.parse_args()
 

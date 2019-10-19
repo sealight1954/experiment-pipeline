@@ -1,12 +1,16 @@
 # Overview
 
+## Assumption
+- For Bash command, arguments must have "--$(key) $(value)" command arguments.
+- If can not, use command coordinator (in progress).
+
 ## Coordinator
 - coordinator.py
     - parallel executor of multiple sequential run
 - bash_coordinator.py
     - parallel executor of bash scripts
 - pipeline coordinator
-    `python run_bash_pipeline.py`
+    `python run_pipeline.py`
     - pipeline which represents following:
         ```
         task 1
@@ -38,7 +42,7 @@
 - [ ] --use-cache option
 - [ ] Handle release worker.
 - [ ] Implement logger
-- [ ] Support dry-run for bash
+- [x] Support dry-run for bash, func
     - Base bash runner and coordinator
     - Only support sequential? Process Pool, maybe okay, but sbatch it seems we need to immitate job-id
     - Or we call dry_submit() for BaseCoordinator.
@@ -51,3 +55,4 @@
 - [ ] Base coordinator to cope with different cmd_args.
     - callable function and cmd_args, or bash commands.
 - [ ] stdout and stderr to files.
+- [x] Sbatch support

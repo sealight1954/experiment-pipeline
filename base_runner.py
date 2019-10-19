@@ -19,7 +19,7 @@ def run_cmd_and_print(cmd, isReturnJobid=False):
     print("stderr: {}".format(comp_proc.stderr))
     if isReturnJobid:
         # return comp_proc.stdout.rstrip().decode("utf-8") 
-        return int(comp_proc.stdout)
+        return str(int(comp_proc.stdout))
 
 
 class BaseBashRunner(BaseRunner):
@@ -31,15 +31,16 @@ class BaseBashRunner(BaseRunner):
         subclass can call this method as
         runner.run(param1=param1, param2=param2) ...
         """
-        print(self.base_cmd_args, kwargs)
+        # print(self.base_cmd_args, kwargs)
         dry_run = kwargs.pop('dry_run', False)
         cmd_args_to_run = self.base_cmd_args
         for key, value in kwargs.items():
             cmd_args_to_run += ["--{}".format(key), str(value)]
         if dry_run:
             print(" ".join(cmd_args_to_run))
+            return " ".join(cmd_args_to_run)
         else:
-            run_cmd_and_print(cmd_args_to_run)
+            return run_cmd_and_print(cmd_args_to_run)
 
 
 # TODO: really need?
