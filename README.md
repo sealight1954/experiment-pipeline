@@ -44,6 +44,8 @@
     - Or we call dry_submit() for BaseCoordinator.
     - Runner configuration seems tricky. we want to avoid modify every subclass of BaseBashRunner.
 - [ ] args to be **kwargs
+- [ ] remove command specific runner class.
+    - Assume every function takes kwargs, at least one argument required.
 - [ ] run -> __call__
 - [ ] Base coordinator to cope with different cmd_args.
     - callable function and cmd_args, or bash commands.

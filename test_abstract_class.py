@@ -9,7 +9,7 @@ class Parent(metaclass=ABCMeta):
         NotImplementedError()
 
 class Child(Parent):
-    def func(self):
+    def __call__(self):
         self.master_func()
     
     def _slave_func(self):
@@ -18,4 +18,4 @@ class Child(Parent):
 
 if __name__ == "__main__":
     child = Child()
-    child.func()
+    child()

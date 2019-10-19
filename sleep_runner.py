@@ -9,13 +9,6 @@ class SleepRunner(BaseRunner):
         run_job_sleep(n=5, id=id)
 
 
-class SleepRunner0(BaseRunner):
-    def __init__(self):
-        self.i = 1
-    
-    def run(self):
-        run_job_sleep(n=5, id="0")
-
 class SleepRunner1(BaseRunner):
     def __init__(self):
         self.i = 1

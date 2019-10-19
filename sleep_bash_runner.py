@@ -8,13 +8,14 @@ def get_sleep_cmd(id, n):
     command += ["--n", "{}".format(n)]
     return command
 
-class SleepBashRunner0(BaseBashRunner):
-    def __init__(self):
-        base_command_args = ["python", "job_script/job_sleep.py"]
-        super(SleepBashRunner0, self).__init__(base_command_args)
+# TODO: Delete after debug.
+# class SleepBashRunner0(BaseBashRunner):
+#     def __init__(self):
+#         base_command_args = ["python", "job_script/job_sleep.py"]
+#         super(SleepBashRunner0, self).__init__(base_command_args)
     
-    def run(self):
-        return super().run()
+#     def run(self):
+#         return super().run()
 
 class SleepBashRunner1(BaseBashRunner):
     def __init__(self):
@@ -22,11 +23,11 @@ class SleepBashRunner1(BaseBashRunner):
         # base_command_args = []
         super(SleepBashRunner1, self).__init__(base_command_args)
     
-    def run(self, id):
+    def run(self, id=0):
         args = ["--id", "{}_1".format(id)]
         return super().run(args)
     
-    def dry_run(self, id):
+    def dry_run(self, id=0):
         args = ["--id", "{}_1".format(id)]
         return super().dry_run(args)
 
@@ -36,12 +37,12 @@ class SleepBashRunner2(BaseBashRunner):
         # base_command_args = []
         super(SleepBashRunner2, self).__init__(base_command_args)
     
-    def run(self, id, n):
+    def run(self, id=0, n=5):
         args = ["--id", "{}_2".format(id)]
         args += ["--n", "{}".format(n)]
         return super().run(args)
 
-    def dry_run(self, id, n):
+    def dry_run(self, id=0, n=5):
         args = ["--id", "{}_2".format(id)]
         args += ["--n", "{}".format(n)]
         return super().dry_run(args)
