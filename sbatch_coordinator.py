@@ -52,7 +52,7 @@ class SbatchCoordinator:
         for job_name, make_runner, cmd_kwargs, job_dependency in job_list:
             
             now = datetime.datetime.now()
-            tmp_str = now.strftime('%Y%m%d%H%M%S-{}.sh')
+            tmp_str = now.strftime('%Y%m%d-%H%M%S-%f-{}.sh')
             tmp_dir = os.path.join(self.log_dir, "tmp")
             os.makedirs(tmp_dir, exist_ok=True)
             tmp_sbatch_path = os.path.join(tmp_dir, tmp_str.format(job_name))

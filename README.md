@@ -79,3 +79,11 @@ Terminated
     - make member variable?
         - Same error.
     - It seems it is very hard to pass constructor to ProcessPool runner function.
+
+## ThreadPool stdout, stderr
+- In parallel run, it seems log file is same. Follwoing code does not make multiple instance.
+    ```
+    def func():
+        return SomeClass()
+    ```
+    

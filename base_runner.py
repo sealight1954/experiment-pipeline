@@ -18,7 +18,7 @@ class BaseBashRunner(BaseRunner):
     def __init__(self, cmd_lst, log_file=None, err_file=None):
         self.base_cmd_args = cmd_lst
         now = datetime.datetime.now()
-        time_str = now.strftime('%Y%m%d%H%M%S')
+        time_str = now.strftime('%Y%m%d-%H%M%S-%f')
         if log_file is None:
             log_file = os.path.join('results', "{}.log".format(time_str))
         if err_file is None:
@@ -26,8 +26,8 @@ class BaseBashRunner(BaseRunner):
             
         self.log_file = log_file
         self.err_file = err_file
-        self.log_f = open(self.log_file, 'w')
-        self.err_f = open(self.err_file, 'w')
+        self.log_f = open(self.log_file, 'w+')
+        self.err_f = open(self.err_file, 'w+')
 
 
     def __call__(self, **kwargs):
