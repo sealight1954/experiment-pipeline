@@ -55,8 +55,10 @@
     - ProcessPoolExecutor.
 - [ ] Implement logger
     - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u
-- [ ] CommandRunStrategy.
+- [x] CommandRunStrategy.
     - CallableRunnerStrategy: callable function and cmd_args, or CommandStrategy: bash commands.
+    - We don't need base strategy. By defining lambda function and arguments to be {}, we can pass commands with some phrase.
+    - Maybe we can wrap that to make base strategy.
 - [in progress] stdout and stderr to files.
     - For Process Pool Executor, runner construction must be inside forked process.
     - We need some way to wrap the construction
