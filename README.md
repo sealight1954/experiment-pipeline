@@ -57,14 +57,25 @@
     - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u
 - [ ] CommandRunStrategy.
     - CallableRunnerStrategy: callable function and cmd_args, or CommandStrategy: bash commands.
-- [ ] stdout and stderr to files.
+- [in progress] stdout and stderr to files.
     - For Process Pool Executor, runner construction must be inside forked process.
     - We need some way to wrap the construction
 - [ ] stdout of coordinator should be commands to execute and corresponding log files.
-- [ ] Error handling. Stop when one command fails.
-- [ ] Maybe we should focus on ThreadPool or ProcessPool. Error handling and log handling is tricky.
+- [x] Error handling. Stop when one command fails.
+    - Suppose assertion error.
+        - For function call(BaseFuncRunner), no worry and it asserts.
+        - For bash call(BaseBashRunner), it will return 1 exit code.
+- [ ] Error handling for Sbatch coordinator.
+    - At least we want to confirm sucessfuly fubmitting jobs.
+    - It includes getting resultcode from squeue and scancel the following jobs.
+- [ ] Maybe we should focus on either ThreadPool nor ProcessPool. Error handling and log handling is tricky.
     - subprocess call itself fork process, so we do not need ProcessPoolEnv for bash runner.
     - How about function call? Variable scope is the problem?
+    - How following statements affect the results?
+    ```
+    import multiprocessing
+multiprocessing.set_start_method('spawn', True)
+    ```
 
 ## stdout and stderr to files
 - construct to inside files

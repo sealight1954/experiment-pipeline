@@ -9,6 +9,7 @@ from coordinator import PoolCoordinator, SequentialCoordinator
 from sbatch_coordinator import SbatchCoordinator
 from base_runner import BaseBashRunner, BaseRunner, BaseFuncRunner
 from job_script.job_sleep import run_job_sleep
+from job_script.job_sleep_error import run_job_sleep_error
 
 
 def run_pipeline(p_id, runner):
@@ -22,19 +23,29 @@ def main(args):
         return BaseBashRunner("python job_script/job_sleep.py".split(" "))
     def make_func_runner():
         return BaseFuncRunner(run_job_sleep)
+    def make_bash_error_runner():
+        return BaseBashRunner("python job_script/job_sleep_error.py".split(" "))
+        # return BaseFuncRunner(run_job_sleep_error)
+
     # make_bash_runner2 = SleepBashRunner2
     # make_func_runner2 = SleepRunner2
     if args.runner_type == "Bash":
-        make_runner = make_bash_runner
+        make_runner1 = make_bash_runner
+        make_runner2 = make_bash_runner
     elif args.runner_type == "Function":
-        make_runner = make_func_runner
+        make_runner1 = make_func_runner
+        make_runner2 = make_func_runner
+    elif args.runner_type == "Mixed-Error":
+        make_runner1 = make_bash_runner
+        make_runner2 = make_bash_error_runner
+
     job_list = [ # job-name, runner, cmd_kwargs, depends_on
-        ["task1", make_runner, {"id": "task1"}, None],
-        ["task1-1", make_runner, {"id": "task1-1"}, ["task1"]],
-        ["task1-2", make_runner, {"id": "task1-2"}, ["task1"]],
-        ["task2", make_runner, {"id": "task2", "n": 4}, ["task1-1", "task1-2"]],
-        ["task2-1", make_runner, {"id": "task2-1", "n": 4}, ["task2"]],
-        ["task2-2", make_runner, {"id": "task2-2", "n": 4}, ["task2"]],
+        ["task1", make_runner1, {"id": "task1"}, None],
+        ["task1-1", make_runner1, {"id": "task1-1"}, ["task1"]],
+        ["task1-2", make_runner1, {"id": "task1-2"}, ["task1"]],
+        ["task2", make_runner2, {"id": "task2", "n": 4}, ["task1-1", "task1-2"]],
+        ["task2-1", make_runner1, {"id": "task2-1", "n": 4}, ["task2"]],
+        ["task2-2", make_runner1, {"id": "task2-2", "n": 4}, ["task2"]],
     ]
 
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.
@@ -58,7 +69,7 @@ def parse_args():
     parser.add_argument('--dry-run', action='store_true',
                         help='Just print commands to execute, no run.')
     parser.add_argument('--runner-type', default="Bash",
-                        choices=["Bash", "Function"],
+                        choices=["Bash", "Function", "Mixed-Error"],
                         help='How to run commands. Bash for call from bash, Func for function call.')
     parser.add_argument('--coordinator-type', default="ProcessPool",
                         choices=["ProcessPool", "ThreadPool", "Sequential", "Sbatch"],

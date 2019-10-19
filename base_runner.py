@@ -12,6 +12,7 @@ def run_cmd_and_print(cmd, isReturnJobid=False, log_f=None, err_f=None):
         err_f = subprocess.PIPE
     comp_proc = subprocess.run(cmd, stdout=log_f, stderr=err_f)
     print(comp_proc.args, comp_proc.returncode)
+    assert comp_proc.returncode == 1, "Error occured in: {}".format(" ".join(comp_proc.args))
     print("stdout: {}".format(comp_proc.stdout))
     print("stderr: {}".format(comp_proc.stderr))
     if isReturnJobid:
