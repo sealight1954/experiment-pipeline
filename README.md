@@ -58,5 +58,24 @@
 - [ ] CommandRunStrategy.
     - CallableRunnerStrategy: callable function and cmd_args, or CommandStrategy: bash commands.
 - [ ] stdout and stderr to files.
+    - For Process Pool Executor, runner construction must be inside forked process.
+    - We need some way to wrap the construction
 - [ ] stdout of coordinator should be commands to execute and corresponding log files.
 - [ ] Error handling. Stop when one command fails.
+
+## stdout and stderr to files
+- construct to inside files
+    ```
+    def _set_construct_run_func(self, make_runner, dry_run=False):
+        def construct_run_func(**kwargs):
+            cmd_runner = make_runner()
+            kwargs["dry_run"] = dry_run
+            return cmd_runner
+        self.construct_run_func = construct_run_func
+    >>> Can't pickle local object 'PoolCoordinator._get_construct_run_func.<locals>.construct_run_func'
+Terminated
+    ```
+    - cannot access to method local object.
+    - make member variable?
+        - Same error.
+    - It seems it is very hard to pass constructor to ProcessPool runner function.

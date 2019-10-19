@@ -6,8 +6,6 @@ multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
 
-from base_runner import run_cmd_and_print
-
 
 class SequentialCoordinator:
     def __init__(self, log_dir="./results"):

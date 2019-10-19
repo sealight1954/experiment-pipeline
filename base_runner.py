@@ -1,5 +1,7 @@
 from abc import abstractmethod, ABCMeta
 import subprocess
+import datetime
+import os
 
 
 class BaseRunner(metaclass=ABCMeta):
@@ -12,19 +14,21 @@ class BaseRunner(metaclass=ABCMeta):
         NotImplementedError()
 
 
-def run_cmd_and_print(cmd, isReturnJobid=False):
-    comp_proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(comp_proc.args, comp_proc.returncode)
-    print("stdout: {}".format(comp_proc.stdout))
-    print("stderr: {}".format(comp_proc.stderr))
-    if isReturnJobid:
-        # return comp_proc.stdout.rstrip().decode("utf-8") 
-        return str(int(comp_proc.stdout))
-
-
 class BaseBashRunner(BaseRunner):
-    def __init__(self, cmd_lst):
+    def __init__(self, cmd_lst, log_file=None, err_file=None):
         self.base_cmd_args = cmd_lst
+        now = datetime.datetime.now()
+        time_str = now.strftime('%Y%m%d%H%M%S')
+        if log_file is None:
+            log_file = os.path.join('results', "{}.log".format(time_str))
+        if err_file is None:
+            err_file = os.path.join('results', "{}.err".format(time_str))
+            
+        self.log_file = log_file
+        self.err_file = err_file
+        self.log_f = open(self.log_file, 'w')
+        self.err_f = open(self.err_file, 'w')
+
 
     def __call__(self, **kwargs):
         """
@@ -40,8 +44,21 @@ class BaseBashRunner(BaseRunner):
             print(" ".join(cmd_args_to_run))
             return " ".join(cmd_args_to_run)
         else:
-            return run_cmd_and_print(cmd_args_to_run)
+            return self.run_cmd_and_print(cmd_args_to_run)
 
+    def run_cmd_and_print(self, cmd, isReturnJobid=False):
+        print("run command start: {}".format(" ".join(cmd)))
+        comp_proc = subprocess.run(cmd, stdout=self.log_f, stderr=self.err_f)
+        print(comp_proc.args, comp_proc.returncode)
+        print("stdout: {}".format(comp_proc.stdout))
+        print("stderr: {}".format(comp_proc.stderr))
+        if isReturnJobid:
+            # return comp_proc.stdout.rstrip().decode("utf-8") 
+            return str(int(comp_proc.stdout))
+    
+    def debug_f_print(self):
+        self.log_f.write("test run: {}".format(" ".join(self.base_cmd_args)))
+        self.log_f.flush()
 
 # TODO: really need?
 class BaseFuncRunner(BaseRunner):
