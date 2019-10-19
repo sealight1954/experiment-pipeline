@@ -62,6 +62,9 @@
     - We need some way to wrap the construction
 - [ ] stdout of coordinator should be commands to execute and corresponding log files.
 - [ ] Error handling. Stop when one command fails.
+- [ ] Maybe we should focus on ThreadPool or ProcessPool. Error handling and log handling is tricky.
+    - subprocess call itself fork process, so we do not need ProcessPoolEnv for bash runner.
+    - How about function call? Variable scope is the problem?
 
 ## stdout and stderr to files
 - construct to inside files

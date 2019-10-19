@@ -4,6 +4,21 @@ import datetime
 import os
 
 
+def run_cmd_and_print(cmd, isReturnJobid=False, log_f=None, err_f=None):
+    print("run command start: {}".format(" ".join(cmd)))
+    if log_f is None:
+        log_f = subprocess.PIPE
+    if err_f is None:
+        err_f = subprocess.PIPE
+    comp_proc = subprocess.run(cmd, stdout=log_f, stderr=err_f)
+    print(comp_proc.args, comp_proc.returncode)
+    print("stdout: {}".format(comp_proc.stdout))
+    print("stderr: {}".format(comp_proc.stderr))
+    if isReturnJobid:
+        # return comp_proc.stdout.rstrip().decode("utf-8") 
+        return str(int(comp_proc.stdout))
+
+
 class BaseRunner(metaclass=ABCMeta):
     @abstractmethod
     def __init__(self):
@@ -44,17 +59,9 @@ class BaseBashRunner(BaseRunner):
             print(" ".join(cmd_args_to_run))
             return " ".join(cmd_args_to_run)
         else:
-            return self.run_cmd_and_print(cmd_args_to_run)
+            return run_cmd_and_print(cmd_args_to_run, log_f=self.log_f, err_f=self.err_f)
 
-    def run_cmd_and_print(self, cmd, isReturnJobid=False):
-        print("run command start: {}".format(" ".join(cmd)))
-        comp_proc = subprocess.run(cmd, stdout=self.log_f, stderr=self.err_f)
-        print(comp_proc.args, comp_proc.returncode)
-        print("stdout: {}".format(comp_proc.stdout))
-        print("stderr: {}".format(comp_proc.stderr))
-        if isReturnJobid:
-            # return comp_proc.stdout.rstrip().decode("utf-8") 
-            return str(int(comp_proc.stdout))
+
     
     def debug_f_print(self):
         self.log_f.write("test run: {}".format(" ".join(self.base_cmd_args)))

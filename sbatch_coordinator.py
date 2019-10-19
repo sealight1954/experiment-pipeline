@@ -8,6 +8,8 @@ multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
 
+from base_runner import run_cmd_and_print
+
 
 def run_with_args(make_runner, num_args, cmd_args):
     cmd_runner = make_runner()
