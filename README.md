@@ -43,7 +43,8 @@
     - Only support sequential? Process Pool, maybe okay, but sbatch it seems we need to immitate job-id
     - Or we call dry_submit() for BaseCoordinator.
     - Runner configuration seems tricky. we want to avoid modify every subclass of BaseBashRunner.
-- [ ] args to be **kwargs
+- [x] args to be **kwargs
+    - Support Function Runner and Bash Runner.
 - [ ] remove command specific runner class.
     - Assume every function takes kwargs, at least one argument required.
 - [ ] run -> __call__
