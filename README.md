@@ -63,6 +63,7 @@
     - For Process Pool Executor, runner construction must be inside forked process.
     - We need some way to wrap the construction
 - [ ] stdout of coordinator should be commands to execute and corresponding log files.
+    - sbatch
 - [x] Error handling. Stop when one command fails.
     - Suppose assertion error.
         - For function call(BaseFuncRunner), no worry and it asserts.

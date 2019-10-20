@@ -30,14 +30,23 @@ def dry_run_with_args(make_runner, num_args, cmd_args):
         return cmd_runner.run(*cmd_args)
 
 sbatch_base_str = """#!/bin/bash
-#SBATCH --output={log_dir}/out_{job_name}_%j.txt
-#SBATCH --error={log_dir}/err_{job_name}_%j.txt
+#SBATCH --output={log_dir}/out_%j_{job_name}.txt
+#SBATCH --error={log_dir}/err_%j_{job_name}.txt
 #
 #SBATCH --ntasks=1
 #SBATCH --time=10:00
 #SBATCH --mem-per-cpu=100
 srun {command}
 """
+
+def get_stdout_file(log_dir, job_name, job_id):
+    """
+    """
+    # Note: This is duplicate but is needed because job_id is acquired after submitting sbatch.
+    return "{log_dir}/out_{job_id}_{job_name}.txt".format(log_dir=log_dir, job_name=job_name, job_id=job_id)
+def get_stderr_file(log_dir, job_name, job_id):
+    return "{log_dir}/err_{job_id}_{job_name}.txt".format(log_dir=log_dir, job_name=job_name, job_id=job_id)
+
 
 
 class SbatchCoordinator:
@@ -60,10 +69,10 @@ class SbatchCoordinator:
             tmp_sbatch_path = os.path.join(tmp_dir, tmp_str.format(job_name))
             cmd_runner = make_runner()
             cmd_kwargs["dry_run"] = True
-            command = cmd_runner(**cmd_kwargs)
+            actual_command = cmd_runner(**cmd_kwargs)
             # command = " ".join(cmd_kwargs)
             with open(tmp_sbatch_path, 'w') as f:
-                f.write(sbatch_base_str.format(log_dir=self.log_dir, job_name=job_name, command=command))
+                f.write(sbatch_base_str.format(log_dir=self.log_dir, job_name=job_name, command=actual_command))
             if job_dependency is None:
                 dependency_option = ""
             else:
@@ -79,5 +88,6 @@ class SbatchCoordinator:
                 job_id_dict[job_name] = run_cmd_and_print(cmd_to_run.split(" "), isReturnJobid=True)
 
             results.append(job_id_dict[job_name])
+            print("Sbatch submit. Results [{}] will be stored in {}".format(actual_command, get_stdout_file(self.log_dir, job_name, job_id_dict[job_name])))
         return results
 
