@@ -62,7 +62,6 @@ class BaseBashRunner(BaseRunner):
         else:
             return run_cmd_and_print(cmd_args_to_run, log_f=self.log_f, err_f=self.err_f)
 
-
     
     def debug_f_print(self):
         self.log_f.write("test run: {}".format(" ".join(self.base_cmd_args)))

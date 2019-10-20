@@ -59,10 +59,10 @@
     - CallableRunnerStrategy: callable function and cmd_args, or CommandStrategy: bash commands.
     - We don't need base strategy. By defining lambda function and arguments to be {}, we can pass commands with some phrase.
     - Maybe we can wrap that to make base strategy.
-- [in progress] stdout and stderr to files.
+- [x] stdout and stderr to files.
     - For Process Pool Executor, runner construction must be inside forked process.
     - We need some way to wrap the construction
-- [ ] stdout of coordinator should be commands to execute and corresponding log files.
+- [x] stdout of coordinator should be commands to execute and corresponding log files.
     - sbatch
 - [x] Error handling. Stop when one command fails.
     - Suppose assertion error.
@@ -71,14 +71,20 @@
 - [ ] Error handling for Sbatch coordinator.
     - At least we want to confirm sucessfuly fubmitting jobs.
     - It includes getting resultcode from squeue and scancel the following jobs.
-- [ ] Maybe we should focus on either ThreadPool nor ProcessPool. Error handling and log handling is tricky.
-    - subprocess call itself fork process, so we do not need ProcessPoolEnv for bash runner.
-    - How about function call? Variable scope is the problem?
+- [x] Support ProcessPool
+    - What we want is [parallel, not concurrency](https://medium.com/contentsquare-engineering-blog/multithreading-vs-multiprocessing-in-python-ece023ad55a)
     - How following statements affect the results?
-    ```
-    import multiprocessing
-multiprocessing.set_start_method('spawn', True)
-    ```
+        - This runs spawn instead of fork? spawn like __main__ called multiple times.
+        ```
+        import multiprocessing
+        multiprocessing.set_start_method('spawn', True)
+        ```
+    - According to [multithreading vs multiprocessing](https://medium.com/contentsquare-engineering-blog/multithreading-vs-multiprocessing-in-python-ece023ad55a), we should focus on multi processing.
+    - We have two ways
+        - [x] construct_and_run need to be static
+        - [no action] [__getstate__ and __setstate__](https://stackoverflow.com/questions/47163820/getting-queue-objects-should-only-be-shared-between-processes-through-inheritan) to runner.
+        - [x] make_runner defined in global scope.
+- [ ] log file interface to run_pipeline.py
 
 ## stdout and stderr to files
 - construct to inside files
