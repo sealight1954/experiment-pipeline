@@ -13,7 +13,7 @@ class SequentialCoordinator:
 
     def submit(self, job_list, dry_run=False):
         results = []
-        for job_name, make_runner, cmd_kwargs, job_dependency in job_list:
+        for _, make_runner, cmd_kwargs, _ in job_list:
             cmd_runner = make_runner()
             cmd_kwargs["dry_run"] = dry_run
             results.append(cmd_runner(**cmd_kwargs))

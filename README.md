@@ -85,6 +85,7 @@
         - [no action] [__getstate__ and __setstate__](https://stackoverflow.com/questions/47163820/getting-queue-objects-should-only-be-shared-between-processes-through-inheritan) to runner.
         - [x] make_runner defined in global scope.
 - [ ] log file interface to run_pipeline.py
+    - BaseBashRunner already have one.
 
 ## stdout and stderr to files
 - construct to inside files
