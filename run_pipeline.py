@@ -17,15 +17,16 @@ def run_pipeline(p_id, runner):
         runner.run("{}-{}".format(p_id, i))
     return "{} finished".format(p_id)
 
-
+def make_bash_runner():
+    return BaseBashRunner("python job_script/job_sleep.py".split(" "))
+def make_func_runner():
+    return BaseFuncRunner(run_job_sleep)
+def make_bash_error_runner():
+    return BaseBashRunner("python job_script/job_sleep_error.py".split(" "))
+    # return BaseFuncRunner(run_job_sleep_error)
+    
 def main(args):
-    def make_bash_runner():
-        return BaseBashRunner("python job_script/job_sleep.py".split(" "))
-    def make_func_runner():
-        return BaseFuncRunner(run_job_sleep)
-    def make_bash_error_runner():
-        return BaseBashRunner("python job_script/job_sleep_error.py".split(" "))
-        # return BaseFuncRunner(run_job_sleep_error)
+
 
     # make_bash_runner2 = SleepBashRunner2
     # make_func_runner2 = SleepRunner2
@@ -40,7 +41,8 @@ def main(args):
         make_runner2 = make_bash_error_runner
 
     job_list = [ # job-name, runner, cmd_kwargs, depends_on
-        ["task1", lambda: BaseBashRunner("python job_script/job_sleep.py --id task1".split(" ")), {}, None],
+        # ["task1", lambda: BaseBashRunner("python job_script/job_sleep.py --id task1".split(" ")), {}, None],
+        ["task1", make_runner1, {"id": "task1"}, None],
         ["task1-1", make_runner1, {"id": "task1-1"}, ["task1"]],
         ["task1-2", make_runner1, {"id": "task1-2"}, ["task1"]],
         ["task2", make_runner2, {"id": "task2", "n": 4}, ["task1-1", "task1-2"]],

@@ -57,9 +57,10 @@ class PoolCoordinator:
                 idx = (idx + 1) % len(job_list)
                 continue
             if job_dependency is None:
-                cmd_runner = make_runner()
+                # cmd_runner = make_runner()
                 cmd_kwargs["dry_run"] = dry_run
-                future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
+                future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs)
+                # future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
                 submit_flags[idx] = True
                 print("submit because no dependency")
             else:
@@ -70,9 +71,10 @@ class PoolCoordinator:
                         ok_to_run = False
                         break
                 if ok_to_run:
-                    cmd_runner = make_runner()
+                    # cmd_runner = make_runner()
                     cmd_kwargs["dry_run"] = dry_run
-                    future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
+                    future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs)
+                    # future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
             if np.all(submit_flags):
@@ -94,3 +96,8 @@ class PoolCoordinator:
         self.executor.shutdown()
         return results
         # return futures
+
+    @staticmethod
+    def construct_and_run(make_runner, **cmd_kwargs):
+        cmd_runner = make_runner()
+        return cmd_runner(**cmd_kwargs)
