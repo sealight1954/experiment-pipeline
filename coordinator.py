@@ -59,6 +59,9 @@ class PoolCoordinator:
             if job_dependency is None:
                 # cmd_runner = make_runner()
                 cmd_kwargs["dry_run"] = dry_run
+                # TODO: log file will be like following.
+                # future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs, 
+                # log_file="results/out_{job_name}.txt", err_file="results/err_{job_name}.txt")
                 future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs)
                 # future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
                 submit_flags[idx] = True

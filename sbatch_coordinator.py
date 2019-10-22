@@ -44,9 +44,10 @@ def get_stdout_file(log_dir, job_name, job_id):
     """
     # Note: This is duplicate but is needed because job_id is acquired after submitting sbatch.
     return "{log_dir}/out_{job_id}_{job_name}.txt".format(log_dir=log_dir, job_name=job_name, job_id=job_id)
+
+
 def get_stderr_file(log_dir, job_name, job_id):
     return "{log_dir}/err_{job_id}_{job_name}.txt".format(log_dir=log_dir, job_name=job_name, job_id=job_id)
-
 
 
 class SbatchCoordinator:

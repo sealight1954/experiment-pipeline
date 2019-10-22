@@ -50,11 +50,9 @@
     - Assume every function takes kwargs, at least one argument required.
 - [x] run -> __call__
 - [x] Sbatch support
-- [ ] --use-cache option
+- [n] --use-cache option ... each script will take care?
 - [x] Handle release worker.
     - ProcessPoolExecutor.
-- [ ] Implement logger
-    - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u
 - [x] CommandRunStrategy.
     - CallableRunnerStrategy: callable function and cmd_args, or CommandStrategy: bash commands.
     - We don't need base strategy. By defining lambda function and arguments to be {}, we can pass commands with some phrase.
@@ -68,9 +66,6 @@
     - Suppose assertion error.
         - For function call(BaseFuncRunner), no worry and it asserts.
         - For bash call(BaseBashRunner), it will return 1 exit code.
-- [ ] Error handling for Sbatch coordinator.
-    - At least we want to confirm sucessfuly fubmitting jobs.
-    - It includes getting resultcode from squeue and scancel the following jobs.
 - [x] Support ProcessPool
     - What we want is [parallel, not concurrency](https://medium.com/contentsquare-engineering-blog/multithreading-vs-multiprocessing-in-python-ece023ad55a)
     - How following statements affect the results?
@@ -84,8 +79,16 @@
         - [x] construct_and_run need to be static
         - [no action] [__getstate__ and __setstate__](https://stackoverflow.com/questions/47163820/getting-queue-objects-should-only-be-shared-between-processes-through-inheritan) to runner.
         - [x] make_runner defined in global scope.
+- [ ] Error handling for Sbatch coordinator.
+    - At least we want to confirm sucessfuly fubmitting jobs.
+    - It includes getting resultcode from squeue and scancel the following jobs.
 - [ ] log file interface to run_pipeline.py
     - BaseBashRunner already have one.
+- [ ] Implement logger
+    - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u
+    - https://docs.python.org/ja/3/library/logging.html#logrecord-attributes
+    - stdout
+    - file.
 
 ## stdout and stderr to files
 - construct to inside files
@@ -97,7 +100,7 @@
             return cmd_runner
         self.construct_run_func = construct_run_func
     >>> Can't pickle local object 'PoolCoordinator._get_construct_run_func.<locals>.construct_run_func'
-Terminated
+    Terminated
     ```
     - cannot access to method local object.
     - make member variable?
