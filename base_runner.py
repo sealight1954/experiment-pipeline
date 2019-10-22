@@ -67,6 +67,7 @@ class BaseBashRunner(BaseRunner):
         self.log_f.write("test run: {}".format(" ".join(self.base_cmd_args)))
         self.log_f.flush()
 
+
 # TODO: really need?
 class BaseFuncRunner(BaseRunner):
     def __init__(self, run_func):

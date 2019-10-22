@@ -16,6 +16,7 @@ sbatch_base_str = """#!/bin/bash
 srun {command}
 """
 
+
 def get_stdout_file(log_dir, job_name, job_id):
     """
     """
@@ -68,4 +69,3 @@ class SbatchCoordinator:
             results.append(job_id_dict[job_name])
             print("Sbatch submit. Results [{}] will be stored in {}".format(actual_command, get_stdout_file(self.log_dir, job_name, job_id_dict[job_name])))
         return results
-

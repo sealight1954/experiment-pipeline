@@ -1,11 +1,11 @@
 import datetime
 
+
 class SomeClass():
     def __init__(self):
         now = datetime.datetime.now()
         self.time_str = now.strftime('%Y%m%d-%H%M%S-%f')
         print(self.time_str)
-
 
     def func(self, message):
         print("{}".format(message))

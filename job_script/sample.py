@@ -10,11 +10,13 @@ https://github.com/joblib/joblib/issues/864 ... multiprocessingのおまじな�
 https://takuya-1st.hatenablog.jp/entry/2016/04/11/044313 ... subprocessの仕様
 """
 
+
 def digest(t): # 適当にCPU資源を消費するための関数
     hash = hashlib.sha256()
     for i in range(t*1000000):
         hash.update('hogehoge'.encode('utf-8'))
     return hash.hexdigest()
+
 
 if __name__=='__main__':
 

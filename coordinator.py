@@ -32,10 +32,6 @@ class PoolCoordinator:
         self.future_list = []
         self.log_dir = log_dir
 
-    # def _submit_with_args(self, make_runner, **kwargs):
-    #     cmd_runner = make_runner()
-    #     cmd_runner(**kwargs)
-
     def submit(self, job_list, dry_run=False):
         """
         Submit jobs to executor.
