@@ -56,10 +56,9 @@ class PoolCoordinator:
                 # cmd_runner = make_runner()
                 cmd_kwargs["dry_run"] = dry_run
                 # TODO: log file will be like following.
-                # future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs, 
-                # log_file="results/out_{job_name}.txt", err_file="results/err_{job_name}.txt")
-                future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs)
-                # future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
+                future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, 
+                    log_file="results/out_{job_name}.txt".format(job_name=job_name),
+                    err_file="results/err_{job_name}.txt".format(job_name=job_name), **cmd_kwargs)
                 submit_flags[idx] = True
                 print("submit because no dependency")
             else:
@@ -72,8 +71,9 @@ class PoolCoordinator:
                 if ok_to_run:
                     # cmd_runner = make_runner()
                     cmd_kwargs["dry_run"] = dry_run
-                    future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, **cmd_kwargs)
-                    # future_dict[job_name] = self.executor.submit(cmd_runner, **cmd_kwargs)
+                    future_dict[job_name] = self.executor.submit(self.construct_and_run, make_runner, 
+                        log_file="results/out_{job_name}.txt".format(job_name=job_name),
+                        err_file="results/err_{job_name}.txt".format(job_name=job_name), **cmd_kwargs)
                     submit_flags[idx] = True
                     print("submit with dependency met: {}".format(job_dependency))
             if np.all(submit_flags):
@@ -97,6 +97,6 @@ class PoolCoordinator:
         # return futures
 
     @staticmethod
-    def construct_and_run(make_runner, **cmd_kwargs):
-        cmd_runner = make_runner()
+    def construct_and_run(make_runner, log_file, err_file, **cmd_kwargs):
+        cmd_runner = make_runner(log_file=log_file, err_file=err_file)
         return cmd_runner(**cmd_kwargs)

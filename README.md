@@ -82,7 +82,7 @@
 - [ ] Error handling for Sbatch coordinator.
     - At least we want to confirm sucessfuly fubmitting jobs.
     - It includes getting resultcode from squeue and scancel the following jobs.
-- [ ] log file interface to run_pipeline.py
+- [x] log file interface to run_pipeline.py
     - BaseBashRunner already have one.
 - [ ] Implement logger
     - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u

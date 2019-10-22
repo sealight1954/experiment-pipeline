@@ -13,27 +13,27 @@ from job_script.job_sleep import run_job_sleep
 from job_script.job_sleep_error import run_job_sleep_error
 
 
-def run_pipeline(p_id, runner):
-    for i in range(3):
-        runner.run("{}-{}".format(p_id, i))
-    return "{} finished".format(p_id)
+#TODO: Move to config file.
+#TODO: logger name can be __name__? Don't know what to utilize logger name.
+#See: https://stackoverflow.com/questions/25187083/python-logging-to-multiple-handlers-at-different-log-levels
+logger = getLogger("pipeline")
+handler = StreamHandler()
+handler.setLevel(logging.DEBUG)
+fhandler = FileHandler("results/log.txt")
+fhandler.setLevel(logging.DEBUG)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('[%(asctime)s %(funcName)s() at %(filename)s L%(lineno)d](%(levelname)s) %(message)s')
+handler.setFormatter(formatter)
+fhandler.setFormatter(formatter)
+
+logger.addHandler(handler)
+logger.addHandler(fhandler)
 
 make_bash_runner = partial(BaseBashRunner, "python job_script/job_sleep.py".split(" "))
 make_func_runner = partial(BaseFuncRunner, run_job_sleep)
 make_bash_error_runner = partial(BaseBashRunner, "python job_script/job_sleep_error.py".split(" "))
-# def make_bash_runner():
-    # return BaseBashRunner("python job_script/job_sleep.py".split(" "))
-# def make_func_runner():
-#     return BaseFuncRunner(run_job_sleep)
-# def make_bash_error_runner():
-#     return BaseBashRunner("python job_script/job_sleep_error.py".split(" "))
-    # return BaseFuncRunner(run_job_sleep_error)
     
 def main(args):
-
-
-    # make_bash_runner2 = SleepBashRunner2
-    # make_func_runner2 = SleepRunner2
     if args.runner_type == "Bash":
         make_runner1 = make_bash_runner
         make_runner2 = make_bash_runner

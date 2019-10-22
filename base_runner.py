@@ -22,8 +22,17 @@ def run_cmd_and_print(cmd, isReturnJobid=False, log_f=None, err_f=None):
 
 class BaseRunner(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self):
-        NotImplementedError()
+    def __init__(self, log_file=None, err_file=None):
+        now = datetime.datetime.now()
+        time_str = now.strftime('%Y%m%d-%H%M%S-%f')
+        if log_file is None:
+            log_file = os.path.join('results', "{}.log".format(time_str))
+        if err_file is None:
+            err_file = os.path.join('results', "{}.err".format(time_str))
+        self.log_file = log_file
+        self.err_file = err_file
+        self.log_f = open(self.log_file, 'w+')
+        self.err_f = open(self.err_file, 'w+')
     
     @abstractmethod
     def __call__(self):
@@ -33,18 +42,7 @@ class BaseRunner(metaclass=ABCMeta):
 class BaseBashRunner(BaseRunner):
     def __init__(self, cmd_lst, log_file=None, err_file=None):
         self.base_cmd_args = cmd_lst
-        now = datetime.datetime.now()
-        time_str = now.strftime('%Y%m%d-%H%M%S-%f')
-        if log_file is None:
-            log_file = os.path.join('results', "{}.log".format(time_str))
-        if err_file is None:
-            err_file = os.path.join('results', "{}.err".format(time_str))
-            
-        self.log_file = log_file
-        self.err_file = err_file
-        self.log_f = open(self.log_file, 'w+')
-        self.err_f = open(self.err_file, 'w+')
-
+        super(BaseBashRunner, self).__init__(log_file=log_file, err_file=err_file)
 
     def __call__(self, **kwargs):
         """
@@ -62,20 +60,20 @@ class BaseBashRunner(BaseRunner):
         else:
             return run_cmd_and_print(cmd_args_to_run, log_f=self.log_f, err_f=self.err_f)
 
-    
-    def debug_f_print(self):
-        self.log_f.write("test run: {}".format(" ".join(self.base_cmd_args)))
-        self.log_f.flush()
-
 
 # TODO: really need?
 class BaseFuncRunner(BaseRunner):
-    def __init__(self, run_func):
+    def __init__(self, run_func, log_file=None, err_file=None):
         self.run_func = run_func
+        super(BaseFuncRunner, self).__init__(log_file=log_file, err_file=err_file)
 
     def __call__(self, **kwargs):
         dry_run = kwargs.pop("dry_run", False)
         if dry_run:
-            print("Function: {}, Arguments: {}".format(self.run_func.__name__, kwargs))
+            #TODO: Should be logger. And Stream handler off or setLevel to Info when dry-run
+            statement = "Function: {}, Arguments: {}".format(self.run_func.__name__, kwargs)
+            print(statement)
+            self.log_f.write(statement)
+            self.log_f.flush()
         else:
             self.run_func(**kwargs)
