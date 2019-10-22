@@ -2,9 +2,12 @@ import time
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 # See: https://github.com/microsoft/ptvsd/issues/1056
 import multiprocessing
+import logging
 multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
+
+logger = logging.getLogger("pipeline")
 
 
 class SequentialCoordinator:
@@ -27,6 +30,7 @@ class PoolCoordinator:
         elif coordinator_type == "ThreadPool":
             self.executor = ThreadPoolExecutor(max_workers=max_workers)
         else:
+            logger.error("Invalid coordinator_type: {}".format(coordinator_type))
             print("Invalid coordinator_type: {}".format(coordinator_type))
             exit(1)
         self.future_list = []
@@ -60,7 +64,7 @@ class PoolCoordinator:
                     log_file="results/out_{job_name}.txt".format(job_name=job_name),
                     err_file="results/err_{job_name}.txt".format(job_name=job_name), **cmd_kwargs)
                 submit_flags[idx] = True
-                print("submit because no dependency")
+                logger.debug("Submit job {}:{}, no dependency".format(idx, job_name))
             else:
                 ok_to_run = True
                 for dependent_job_name in job_dependency:
@@ -75,9 +79,10 @@ class PoolCoordinator:
                         log_file="results/out_{job_name}.txt".format(job_name=job_name),
                         err_file="results/err_{job_name}.txt".format(job_name=job_name), **cmd_kwargs)
                     submit_flags[idx] = True
-                    print("submit with dependency met: {}".format(job_dependency))
+                    logger.debug("Submit job {}:{}, depends on {}".format(idx, job_name, job_dependency))
+                    # print("submit with dependency met: {}".format(job_dependency))
             if np.all(submit_flags):
-                print("submit finished")
+                logger.info("Submission finished")
                 break
             idx = (idx + 1) % len(job_list)
             time.sleep(0.5)  # TODO: may not be needed

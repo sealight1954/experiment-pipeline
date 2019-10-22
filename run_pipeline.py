@@ -1,6 +1,8 @@
 import argparse
 import time
 import numpy as np
+import logging
+from logging import getLogger, StreamHandler, FileHandler
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
 
@@ -53,6 +55,7 @@ def main(args):
         ["task2-1", make_runner1, {"id": "task2-1", "n": 4}, ["task2"]],
         ["task2-2", make_runner1, {"id": "task2-2", "n": 4}, ["task2"]],
     ]
+    logger.info("job_list is: {}".format(job_list))
 
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.
     make_coordinator = {
@@ -66,7 +69,7 @@ def main(args):
     results = coordinator.submit(job_list, args.dry_run)
 
     for idx, result in enumerate(results):
-        print("[{}]: Results: {}".format(idx, result))
+        logger.debug("[{}]: Results: {}".format(idx, result))
 
 
 def parse_args():
@@ -80,6 +83,8 @@ def parse_args():
     parser.add_argument('--coordinator-type', default="ProcessPool",
                         choices=["ProcessPool", "ThreadPool", "Sequential", "Sbatch"],
                         help='Run commands in sequential manner. Default: parallel using pool')
+    parser.add_argument('--log-dir', default="./results", type=str, 
+                        help='Directory path to store logs.')
     return parser.parse_args()
 
 

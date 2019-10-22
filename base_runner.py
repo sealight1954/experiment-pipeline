@@ -2,19 +2,23 @@ from abc import abstractmethod, ABCMeta
 import subprocess
 import datetime
 import os
+import logging
+
+logger = logging.getLogger("pipeline")
 
 
 def run_cmd_and_print(cmd, isReturnJobid=False, log_f=None, err_f=None):
-    print("run command start: {}".format(" ".join(cmd)))
+    logger.debug("Run command start: {}".format(" ".join(cmd)))
     if log_f is None:
         log_f = subprocess.PIPE
     if err_f is None:
         err_f = subprocess.PIPE
     comp_proc = subprocess.run(cmd, stdout=log_f, stderr=err_f)
-    print(comp_proc.args, comp_proc.returncode)
+    logger.debug("returncode: {}, args: {}".format(comp_proc.returncode, comp_proc.args))
     assert comp_proc.returncode == 0, "Error occured in: {}".format(" ".join(comp_proc.args))
-    print("stdout: {}".format(comp_proc.stdout))
-    print("stderr: {}".format(comp_proc.stderr))
+    if log_f is subprocess.PIPE:
+        logger.debug("stdout: {}".format(comp_proc.stdout))
+        logger.debug("stderr: {}".format(comp_proc.stderr))
     if isReturnJobid:
         # return comp_proc.stdout.rstrip().decode("utf-8") 
         return str(int(comp_proc.stdout))

@@ -1,11 +1,13 @@
 import time
 import os
 import datetime
+import logging
 
 import numpy as np
 
 from base_runner import run_cmd_and_print
 
+logger = logging.getLogger("pipeline")
 sbatch_base_str = """#!/bin/bash
 #SBATCH --output={log_dir}/out_%j_{job_name}.txt
 #SBATCH --error={log_dir}/err_%j_{job_name}.txt
@@ -67,5 +69,5 @@ class SbatchCoordinator:
                 job_id_dict[job_name] = run_cmd_and_print(cmd_to_run.split(" "), isReturnJobid=True)
 
             results.append(job_id_dict[job_name])
-            print("Sbatch submit. Results [{}] will be stored in {}".format(actual_command, get_stdout_file(self.log_dir, job_name, job_id_dict[job_name])))
+            logger.debug("Sbatch submit. Results [{}] will be stored in {}".format(actual_command, get_stdout_file(self.log_dir, job_name, job_id_dict[job_name])))
         return results
