@@ -1,33 +1,10 @@
 import time
 import os
 import datetime
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-# See: https://github.com/microsoft/ptvsd/issues/1056
-import multiprocessing
-multiprocessing.set_start_method('spawn', True)
 
 import numpy as np
 
 from base_runner import run_cmd_and_print
-
-
-def run_with_args(make_runner, num_args, cmd_args):
-    cmd_runner = make_runner()
-    if num_args == 0:
-        return cmd_runner.run()
-    elif num_args == 1:
-        return cmd_runner.run(cmd_args)
-    else:
-        return cmd_runner.run(*cmd_args)
-
-def dry_run_with_args(make_runner, num_args, cmd_args):
-    cmd_runner = make_runner()
-    if num_args == 0:
-        return cmd_runner.run()
-    elif num_args == 1:
-        return cmd_runner.run(cmd_args)
-    else:
-        return cmd_runner.run(*cmd_args)
 
 sbatch_base_str = """#!/bin/bash
 #SBATCH --output={log_dir}/out_%j_{job_name}.txt
