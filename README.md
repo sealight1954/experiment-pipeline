@@ -93,7 +93,7 @@
 - [x] Job list to be class.
     - Subclass of list.
     - User only need to focus on making job_list
-- [ ] Get job_list from external script. run_pipeline.py as a template.
+- [x] Get job_list from external script. run_pipeline.py as a template.
 
 ## stdout and stderr to files
 - construct to inside files
