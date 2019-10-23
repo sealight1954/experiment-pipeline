@@ -2,7 +2,6 @@ import argparse
 import time
 import numpy as np
 import logging
-from logging import getLogger, StreamHandler, FileHandler
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
 
@@ -12,22 +11,7 @@ from coordinator import PoolCoordinator, SequentialCoordinator
 from sbatch_coordinator import SbatchCoordinator
 from job_list import Job, JobList
 from get_job_list import get_job_list
-
-#TODO: Move to config file.
-#TODO: logger name can be __name__? Don't know what to utilize logger name.
-#See: https://stackoverflow.com/questions/25187083/python-logging-to-multiple-handlers-at-different-log-levels
-logger = getLogger("pipeline")
-handler = StreamHandler()
-handler.setLevel(logging.DEBUG)
-fhandler = FileHandler("results/log.txt")
-fhandler.setLevel(logging.DEBUG)
-logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('[%(asctime)s %(funcName)s() at %(filename)s L%(lineno)d](%(levelname)s) %(message)s')
-handler.setFormatter(formatter)
-fhandler.setFormatter(formatter)
-
-logger.addHandler(handler)
-logger.addHandler(fhandler)
+from mylogger import logger
 
   
 def main(args):
