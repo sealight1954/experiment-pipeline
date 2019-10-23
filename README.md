@@ -84,11 +84,16 @@
     - It includes getting resultcode from squeue and scancel the following jobs.
 - [x] log file interface to run_pipeline.py
     - BaseBashRunner already have one.
-- [ ] Implement logger
+- [x] Implement logger
     - https://stackoverflow.com/questions/49782749/processpoolexecutor-logging-fails-to-log-inside-function-on-windows-but-not-on-u
     - https://docs.python.org/ja/3/library/logging.html#logrecord-attributes
     - stdout
     - file.
+- [ ] Error handling more.
+- [x] Job list to be class.
+    - Subclass of list.
+    - User only need to focus on making job_list
+- [ ] Get job_list from external script. run_pipeline.py as a template.
 
 ## stdout and stderr to files
 - construct to inside files

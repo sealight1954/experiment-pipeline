@@ -13,7 +13,7 @@ from sbatch_coordinator import SbatchCoordinator
 from base_runner import BaseBashRunner, BaseRunner, BaseFuncRunner
 from job_script.job_sleep import run_job_sleep
 from job_script.job_sleep_error import run_job_sleep_error
-
+from job_list import Job, JobList
 
 #TODO: Move to config file.
 #TODO: logger name can be __name__? Don't know what to utilize logger name.
@@ -46,7 +46,7 @@ def main(args):
         make_runner1 = make_bash_runner
         make_runner2 = make_bash_error_runner
 
-    job_list = [ # job-name, runner, cmd_kwargs, depends_on
+    job_list = JobList([ # job-name, runner, cmd_kwargs, depends_on
         ["task1", partial(BaseBashRunner, "python job_script/job_sleep.py --id task1".split(" ")), {}, None],
         # ["task1", make_runner1, {"id": "task1"}, None],
         ["task1-1", make_runner1, {"id": "task1-1"}, ["task1"]],
@@ -54,7 +54,7 @@ def main(args):
         ["task2", make_runner2, {"id": "task2", "n": 4}, ["task1-1", "task1-2"]],
         ["task2-1", make_runner1, {"id": "task2-1", "n": 4}, ["task2"]],
         ["task2-2", make_runner1, {"id": "task2-2", "n": 4}, ["task2"]],
-    ]
+    ])
     logger.info("job_list is: {}".format(job_list))
 
     # TODO: Output of submit() should be same type for Sequential and PoolParallel.
