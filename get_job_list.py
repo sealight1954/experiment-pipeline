@@ -8,7 +8,9 @@ from job_script.job_sleep_error import run_job_sleep_error
 
 make_bash_runner = partial(BaseBashRunner, "python job_script/job_sleep.py".split(" "))
 make_func_runner = partial(BaseFuncRunner, run_job_sleep)
-make_bash_error_runner = partial(BaseBashRunner, "python job_script/job_sleep_error.py".split(" "))
+make_bash_error_runner1 = partial(BaseBashRunner, "python job_script/job_sleep_error.py".split(" "))
+make_bash_error_runner2 = partial(BaseBashRunner, "python job_script/job_sleep_error_exit1.py".split(" "))
+
 
 def get_job_list(runner_type):
     if runner_type == "Bash":
@@ -17,9 +19,12 @@ def get_job_list(runner_type):
     elif runner_type == "Function":
         make_runner1 = make_func_runner
         make_runner2 = make_func_runner
-    elif runner_type == "Mixed-Error":
+    elif runner_type == "Mixed-Error1":
         make_runner1 = make_bash_runner
-        make_runner2 = make_bash_error_runner
+        make_runner2 = make_bash_error_runner1
+    elif runner_type == "Mixed-Error2":
+        make_runner1 = make_bash_runner
+        make_runner2 = make_bash_error_runner2
 
     job_list = JobList([ # job-name, runner, cmd_kwargs, depends_on
         ["task1", partial(BaseBashRunner, "python job_script/job_sleep.py --id task1".split(" ")), {}, None],

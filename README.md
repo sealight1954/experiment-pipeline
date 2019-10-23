@@ -89,7 +89,7 @@
     - https://docs.python.org/ja/3/library/logging.html#logrecord-attributes
     - stdout
     - file.
-- [ ] Error handling more.
+- [x] Error handling more. exit code.
 - [x] Job list to be class.
     - Subclass of list.
     - User only need to focus on making job_list

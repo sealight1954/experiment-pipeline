@@ -55,7 +55,7 @@ def parse_args():
     parser.add_argument('--dry-run', action='store_true',
                         help='Just print commands to execute, no run.')
     parser.add_argument('--runner-type', default="Bash",
-                        choices=["Bash", "Function", "Mixed-Error"],
+                        choices=["Bash", "Function", "Mixed-Error1", "Mixed-Error2"],
                         help='How to run commands. Bash for call from bash, Func for function call.')
     parser.add_argument('--coordinator-type', default="ProcessPool",
                         choices=["ProcessPool", "ThreadPool", "Sequential", "Sbatch"],
